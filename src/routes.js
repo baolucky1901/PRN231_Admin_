@@ -9,6 +9,12 @@ import LoginPage from './pages/LoginPage';
 import Page404 from './pages/Page404';
 import ProductsPage from './pages/ProductsPage';
 import DashboardAppPage from './pages/DashboardAppPage';
+import AccountPage from './pages/AccountPage';
+import OrderPage from './pages/OrderPage';
+import CategoryPage from './pages/CategoryPage';
+import BookPage from './pages/BookPage';
+import EBookPage from './pages/EBookPage';
+import PublisherPage from './pages/PublisherPage';
 
 // ----------------------------------------------------------------------
 
@@ -21,6 +27,12 @@ export default function Router() {
         { element: <Navigate to="/dashboard/app" />, index: true },
         { path: 'app', element: <DashboardAppPage /> },
         { path: 'user', element: <UserPage /> },
+        { path: 'order', element: <OrderPage /> },
+        { path: 'account', element: <AccountPage /> },
+        { path: 'category', element: <CategoryPage /> },
+        { path: 'book', element: <BookPage /> },
+        { path: 'ebook', element: <EBookPage /> },
+        { path: 'publisher', element: <PublisherPage /> },
         { path: 'products', element: <ProductsPage /> },
         { path: 'blog', element: <BlogPage /> },
       ],
