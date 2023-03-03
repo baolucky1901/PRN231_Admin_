@@ -15,6 +15,8 @@ import CategoryPage from './pages/CategoryPage';
 import BookPage from './pages/BookPage';
 import EBookPage from './pages/EBookPage';
 import PublisherPage from './pages/PublisherPage';
+import ComboBookPage from './pages/ComboBookPage';
+import ListBookPage from './pages/ListBookPage';
 
 // ----------------------------------------------------------------------
 
@@ -33,6 +35,11 @@ export default function Router() {
         { path: 'book', element: <BookPage /> },
         { path: 'ebook', element: <EBookPage /> },
         { path: 'publisher', element: <PublisherPage /> },
+        { path: 'combobook', element: <ComboBookPage />, 
+          children: [
+            { element: <Navigate to="/dashboard/combobook" />, index: true },
+            { path: 'listbook', element: <ListBookPage /> },
+          ] },
         { path: 'products', element: <ProductsPage /> },
         { path: 'blog', element: <BlogPage /> },
       ],

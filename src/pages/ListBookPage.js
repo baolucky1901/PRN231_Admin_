@@ -2,20 +2,6 @@ import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
 import { sentenceCase } from 'change-case';
 import { useState, useEffect } from 'react';
-// @antd
-import { Form,
-  Input,
-  // Button,
-  Modal,
-  Radio,
-  Select,
-  Cascader,
-  DatePicker,
-  InputNumber,
-  TreeSelect,
-  Switch,
-  Checkbox,
-  Upload, } from 'antd';
 // @mui
 import {
   Card,
@@ -25,7 +11,7 @@ import {
   Avatar,
   Button,
   Popover,
-  // Checkbox,
+  Checkbox,
   TableRow,
   MenuItem,
   TableBody,
@@ -46,8 +32,6 @@ import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
 import USERLIST from '../_mock/user';
 
 // ----------------------------------------------------------------------
-const { TextArea } = Input;
-
 
 const TABLE_HEAD = [
   // { id: 'name', label: 'Name', alignRight: false },
@@ -58,6 +42,13 @@ const TABLE_HEAD = [
   // { id: '' },
   { id: 'id', label: 'Id', alignRight: false },
   { id: 'name', label: 'Name', alignRight: false },
+  { id: 'price', label: 'Price', alignRight: true },
+  { id: 'amount', label: 'Amount', alignRight: true },
+  { id: 'amountSold', label: 'AmountSold', alignRight: true },
+  { id: 'author', label: 'Author', alignRight: false },
+  { id: 'categoryName', label: 'Category', alignRight: false },
+  { id: 'publisherName', label: 'Publisher', alignRight: false },
+  { id: 'isActive', label: 'Active', alignRight: false },
   { id: '' },
   // { id: 'userId', label: 'User Id', alignRight: false },
   // { id: 'id', label: 'Id', alignRight: false },
@@ -96,97 +87,7 @@ function applySortFilter(array, comparator, query) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-const CollectionCreateForm = ({ open, onCreate, onCancel }) => {
-  const [form] = Form.useForm();
-  const onOk = () => {
-    form.submit();
-  };
-  return (
-    <Modal
-      open={open}
-      title="Create a new Category"
-      okText="Create"
-      cancelText="Cancel"
-      onCancel={onCancel}
-      onOk={() => {
-        form
-          .validateFields()
-          .then((values) => {
-            form.resetFields();
-            onCreate(values);
-          })
-          .catch((info) => {
-            console.log('Validate Failed:', info);
-          });
-      }}
-    >
-      <Form
-        form={form}
-        autoComplete="off"
-        layout="vertical"
-        name="form_in_modal"
-        // initialValues={{
-        //   modifier: 'public',
-        // }}
-      >
-        <Form.Item
-            name="name"
-            label="Name"
-            rules={[
-              {
-                required: true,
-                message: "Please enter your name",
-              },
-              { whitespace: true },
-              { min: 3 },
-            ]}
-            hasFeedback
-          >
-            <Input placeholder="Type your name" />
-          </Form.Item>
-
-        <Form.Item  
-            name="description" 
-            label="Description"
-            rules={[
-              { whitespace: true },
-            ]}
-            requiredMark="optional"
-        >
-          <TextArea 
-            placeholder="Type something" 
-            rows={4} 
-            showCount 
-            maxLength={500}  
-          />
-        </Form.Item>
-        {/* <Form.Item
-          name="title"
-          label="Title"
-          rules={[
-            {
-              required: true,
-              message: 'Please input the title of collection!',
-            },
-          ]}
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item name="description" label="Description">
-          <Input type="textarea" />
-        </Form.Item>
-        <Form.Item name="modifier" className="collection-create-form_last-form-item">
-          <Radio.Group>
-            <Radio value="public">Public</Radio>
-            <Radio value="private">Private</Radio>
-          </Radio.Group>
-        </Form.Item> */}
-      </Form>
-    </Modal>
-  );
-};
-
-export default function CategoryPage() {
+export default function ListBookPage() {
   const [open, setOpen] = useState(null);
 
   const [page, setPage] = useState(0);
@@ -207,15 +108,7 @@ export default function CategoryPage() {
  
   const [error, setError] = useState(null);
 
-  const APIUrl = "https://localhost:44301/api/categories";
-
-  //modal create button
-  const [openModal, setOpenModal] = useState(false);
-
-  const onCreate = (values) => {
-    console.log('Received values of form: ', values);
-    setOpenModal(false);
-  };
+  const APIUrl = "https://localhost:44301/api/books/admin/physical-books";
 
   useEffect(() => {
     fetch(APIUrl+"?page=1&pageSize=25")
@@ -303,7 +196,7 @@ export default function CategoryPage() {
   return (
     <>
       <Helmet>
-        <title> Category | Minimal UI </title>
+        <title> List Book | Minimal UI </title>
       </Helmet>
 
         {loading && <div>A moment please...</div>}
@@ -314,27 +207,11 @@ export default function CategoryPage() {
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Category
+          List Book to add Combo Book
           </Typography>
           {/* <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
-            New Category
+            New Book
           </Button> */}
-          <Button
-            variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}
-            type="primary"
-            onClick={() => {
-              setOpenModal(true);
-            }}
-          >
-            New Category
-          </Button>
-          <CollectionCreateForm
-            open={openModal}
-            onCreate={onCreate}
-            onCancel={() => {
-              setOpenModal(false);
-            }}
-          />
         </Stack>
 
         <Card>
@@ -354,7 +231,7 @@ export default function CategoryPage() {
                 />
                 <TableBody>
                   {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { id, name, email, imgPath, isActive } = row;
+                    const { id, name, isbn, author, price, amount, amountSold, categoryName, publisherName,isActive } = row;
                     const selectedUser = selected.indexOf(id) !== -1;
 
                     return (
@@ -366,13 +243,54 @@ export default function CategoryPage() {
                         <TableCell align="left">{id}</TableCell>
 
                         <TableCell component="th" scope="row" padding="none">
-                          <Stack direction="row" alignItems="center" spacing={2}>
-                            <Avatar alt={name} src={imgPath} />
+                          <Stack direction="column" alignItems="start" padding={2} spacing={2}>
+                            
                             <Typography variant="subtitle2" noWrap>
                               {name}
                             </Typography>
+                            ISBN: {isbn}
                           </Stack>
                         </TableCell>
+
+                        <TableCell align="right">{price}</TableCell>
+
+                        <TableCell align="right">{amount}</TableCell>
+
+                        <TableCell align="right">{amountSold}</TableCell>
+
+                        <TableCell component="th" scope="row" padding="none">
+                          <Stack direction="row" alignItems="start" minWidth={2} padding={2} spacing={2}>
+                            <Typography variant="subtitle2" noWrap>
+                              {author}
+                            </Typography>
+                          </Stack>
+                        </TableCell>
+
+                        <TableCell component="th" scope="row" padding="none">
+                          <Stack direction="row" alignItems="center" padding={2} spacing={2}>
+                            <Typography noWrap>
+                              {categoryName}
+                            </Typography>
+                          </Stack>
+                        </TableCell>
+
+                        <TableCell component="th" scope="row" padding="none">
+                          <Stack direction="row" alignItems="center" padding={2} spacing={2}>
+                            <Typography noWrap>
+                              {publisherName}
+                            </Typography>
+                          </Stack>
+                        </TableCell>
+
+                        <TableCell align="left">
+                          {isActive === true ? <Label color={('success')}>Active</Label> : <Label color={('error')}>Inactive</Label>}
+                        </TableCell>
+
+                        {/* <TableCell align="left">{isVerified ? 'Yes' : 'No'}</TableCell>
+
+                        <TableCell align="left">
+                          <Label color={(status === 'banned' && 'error') || 'success'}>{sentenceCase(status)}</Label>
+                        </TableCell> */}
 
                         <TableCell align="right">
                           <IconButton size="large" color="inherit" onClick={handleOpenMenu}>

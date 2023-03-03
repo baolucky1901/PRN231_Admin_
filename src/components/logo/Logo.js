@@ -82,7 +82,7 @@ const Logo = forwardRef(({ disabledLink = false, sx, ...other }, ref) => {
   }
 
   return (
-    <Link to="/" component={RouterLink} sx={{ display: 'contents' }}>
+    <Link to="./order" component={RouterLink} sx={{ display: 'contents' }}>
       {logo}
       <span>
         <Typography variant="h4" sx={{ mb: 5 }}>

@@ -2,20 +2,7 @@ import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
 import { sentenceCase } from 'change-case';
 import { useState, useEffect } from 'react';
-// @antd
-import { Form,
-  Input,
-  // Button,
-  Modal,
-  Radio,
-  Select,
-  Cascader,
-  DatePicker,
-  InputNumber,
-  TreeSelect,
-  Switch,
-  Checkbox,
-  Upload, } from 'antd';
+import { Form, Input, Modal, Radio, InputNumber } from 'antd';
 // @mui
 import {
   Card,
@@ -25,7 +12,7 @@ import {
   Avatar,
   Button,
   Popover,
-  // Checkbox,
+  Checkbox,
   TableRow,
   MenuItem,
   TableBody,
@@ -44,10 +31,11 @@ import Scrollbar from '../components/scrollbar';
 import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
 // mock
 import USERLIST from '../_mock/user';
+import { Link } from 'react-router-dom';
 
 // ----------------------------------------------------------------------
-const { TextArea } = Input;
 
+const { TextArea } = Input;
 
 const TABLE_HEAD = [
   // { id: 'name', label: 'Name', alignRight: false },
@@ -58,6 +46,9 @@ const TABLE_HEAD = [
   // { id: '' },
   { id: 'id', label: 'Id', alignRight: false },
   { id: 'name', label: 'Name', alignRight: false },
+  { id: 'priceReduction', label: 'Price', alignRight: true },
+  { id: 'description', label: 'Description', alignRight: false },
+  { id: 'isActive', label: 'Active', alignRight: false },
   { id: '' },
   // { id: 'userId', label: 'User Id', alignRight: false },
   // { id: 'id', label: 'Id', alignRight: false },
@@ -97,96 +88,109 @@ function applySortFilter(array, comparator, query) {
 }
 
 const CollectionCreateForm = ({ open, onCreate, onCancel }) => {
-  const [form] = Form.useForm();
-  const onOk = () => {
-    form.submit();
-  };
-  return (
-    <Modal
-      open={open}
-      title="Create a new Category"
-      okText="Create"
-      cancelText="Cancel"
-      onCancel={onCancel}
-      onOk={() => {
-        form
-          .validateFields()
-          .then((values) => {
-            form.resetFields();
-            onCreate(values);
-          })
-          .catch((info) => {
-            console.log('Validate Failed:', info);
-          });
-      }}
-    >
-      <Form
-        form={form}
-        autoComplete="off"
-        layout="vertical"
-        name="form_in_modal"
-        // initialValues={{
-        //   modifier: 'public',
-        // }}
+    const [form] = Form.useForm();
+    const onOk = () => {
+      form.submit();
+    };
+    return (
+      <Modal
+        open={open}
+        title="Create a new Combo Book"
+        okText="Create"
+        cancelText="Cancel"
+        onCancel={onCancel}
+        onOk={() => {
+          form
+            .validateFields()
+            .then((values) => {
+              form.resetFields();
+              onCreate(values);
+            })
+            .catch((info) => {
+              console.log('Validate Failed:', info);
+            });
+        }}
       >
-        <Form.Item
-            name="name"
-            label="Name"
+        <Form
+          form={form}
+          autoComplete="off"
+          layout="vertical"
+          name="form_in_modal"
+          // initialValues={{
+          //   modifier: 'public',
+          // }}
+        >
+          <Form.Item
+              name="name"
+              label="Name"
+              rules={[
+                {
+                  required: true,
+                  message: "Please enter your name",
+                },
+                { whitespace: true },
+                { min: 3 },
+              ]}
+              hasFeedback
+            >
+              <Input placeholder="Type your name" />
+            </Form.Item>
+
+            <Form.Item label="PriceReduction">
+              <Form.Item 
+                name="input-priceReduction"
+                rules={[{ 
+                  required: true, 
+                  message: 'Please type your price number' 
+                }]} 
+                noStyle
+                >
+                <InputNumber min={0} />
+              </Form.Item>
+            </Form.Item>
+  
+          <Form.Item  
+              name="description" 
+              label="Description"
+              rules={[
+                { whitespace: true },
+              ]}
+              requiredMark="optional"
+          >
+            <TextArea 
+              placeholder="Type something" 
+              rows={4} 
+              showCount 
+              maxLength={500}  
+            />
+          </Form.Item>
+          {/* <Form.Item
+            name="title"
+            label="Title"
             rules={[
               {
                 required: true,
-                message: "Please enter your name",
+                message: 'Please input the title of collection!',
               },
-              { whitespace: true },
-              { min: 3 },
             ]}
-            hasFeedback
           >
-            <Input placeholder="Type your name" />
+            <Input />
           </Form.Item>
+          <Form.Item name="description" label="Description">
+            <Input type="textarea" />
+          </Form.Item>
+          <Form.Item name="modifier" className="collection-create-form_last-form-item">
+            <Radio.Group>
+              <Radio value="public">Public</Radio>
+              <Radio value="private">Private</Radio>
+            </Radio.Group>
+          </Form.Item> */}
+        </Form>
+      </Modal>
+    );
+  };
 
-        <Form.Item  
-            name="description" 
-            label="Description"
-            rules={[
-              { whitespace: true },
-            ]}
-            requiredMark="optional"
-        >
-          <TextArea 
-            placeholder="Type something" 
-            rows={4} 
-            showCount 
-            maxLength={500}  
-          />
-        </Form.Item>
-        {/* <Form.Item
-          name="title"
-          label="Title"
-          rules={[
-            {
-              required: true,
-              message: 'Please input the title of collection!',
-            },
-          ]}
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item name="description" label="Description">
-          <Input type="textarea" />
-        </Form.Item>
-        <Form.Item name="modifier" className="collection-create-form_last-form-item">
-          <Radio.Group>
-            <Radio value="public">Public</Radio>
-            <Radio value="private">Private</Radio>
-          </Radio.Group>
-        </Form.Item> */}
-      </Form>
-    </Modal>
-  );
-};
-
-export default function CategoryPage() {
+export default function ComboBookPage() {
   const [open, setOpen] = useState(null);
 
   const [page, setPage] = useState(0);
@@ -207,7 +211,7 @@ export default function CategoryPage() {
  
   const [error, setError] = useState(null);
 
-  const APIUrl = "https://localhost:44301/api/categories";
+  const APIUrl = "https://localhost:44301/api/combobooks";
 
   //modal create button
   const [openModal, setOpenModal] = useState(false);
@@ -303,7 +307,7 @@ export default function CategoryPage() {
   return (
     <>
       <Helmet>
-        <title> Category | Minimal UI </title>
+        <title> Combo Book | Minimal UI </title>
       </Helmet>
 
         {loading && <div>A moment please...</div>}
@@ -314,10 +318,10 @@ export default function CategoryPage() {
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Category
+            Combo Book
           </Typography>
           {/* <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
-            New Category
+            New Combo Book
           </Button> */}
           <Button
             variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}
@@ -326,7 +330,7 @@ export default function CategoryPage() {
               setOpenModal(true);
             }}
           >
-            New Category
+            New Combo Book
           </Button>
           <CollectionCreateForm
             open={openModal}
@@ -354,7 +358,7 @@ export default function CategoryPage() {
                 />
                 <TableBody>
                   {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { id, name, email, imgPath, isActive } = row;
+                    const { id, name, priceReduction, description, isActive } = row;
                     const selectedUser = selected.indexOf(id) !== -1;
 
                     return (
@@ -367,11 +371,25 @@ export default function CategoryPage() {
 
                         <TableCell component="th" scope="row" padding="none">
                           <Stack direction="row" alignItems="center" spacing={2}>
-                            <Avatar alt={name} src={imgPath} />
+                            
                             <Typography variant="subtitle2" noWrap>
                               {name}
                             </Typography>
                           </Stack>
+                        </TableCell>
+
+                        <TableCell align="right">{priceReduction}</TableCell>
+
+                        <TableCell component="th" scope="row" padding="none">
+                          <Stack direction="row" alignItems="start" minWidth={2} padding={2} spacing={2}>
+                            <Typography variant="subtitle2" noWrap>
+                              {description}
+                            </Typography>
+                          </Stack>
+                        </TableCell>
+
+                        <TableCell align="left">
+                          {isActive === true ? <Label color={('success')}>Active</Label> : <Label color={('error')}>Inactive</Label>}
                         </TableCell>
 
                         <TableCell align="right">

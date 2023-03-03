@@ -9,9 +9,9 @@ import {
   Stack,
   Paper,
   Avatar,
-  Button,
+  // Button,
   Popover,
-  Checkbox,
+  // Checkbox,
   TableRow,
   MenuItem,
   TableBody,
@@ -33,6 +33,7 @@ import USERLIST from '../_mock/user';
 
 // ----------------------------------------------------------------------
 
+// header table
 const TABLE_HEAD = [
   // { id: 'name', label: 'Name', alignRight: false },
   // { id: 'company', label: 'Company', alignRight: false },
@@ -204,9 +205,6 @@ export default function AccountPage() {
           <Typography variant="h4" gutterBottom>
             Account
           </Typography>
-          <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
-            New Account
-          </Button>
         </Stack>
 
         <Card>

@@ -46,6 +46,11 @@ const navConfig = [
     path: '/dashboard/publisher',
     icon: icon('ic_publisher'),
   },
+  {
+    title: 'combo book',
+    path: '/dashboard/combobook',
+    icon: icon('ic_combobook'),
+  },
   // {
   //   title: 'product',
   //   path: '/dashboard/products',

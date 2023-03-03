@@ -2,6 +2,20 @@ import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
 import { sentenceCase } from 'change-case';
 import { useState, useEffect } from 'react';
+// @antd
+import { Form,
+  Input,
+  // Button,
+  Modal,
+  Radio,
+  Select,
+  Cascader,
+  DatePicker,
+  InputNumber,
+  TreeSelect,
+  Switch,
+  Checkbox,
+  Upload, } from 'antd';
 // @mui
 import {
   Card,
@@ -11,7 +25,7 @@ import {
   Avatar,
   Button,
   Popover,
-  Checkbox,
+  // Checkbox,
   TableRow,
   MenuItem,
   TableBody,
@@ -81,6 +95,80 @@ function applySortFilter(array, comparator, query) {
   return stabilizedThis.map((el) => el[0]);
 }
 
+const CollectionCreateForm = ({ open, onCreate, onCancel }) => {
+  const [form] = Form.useForm();
+  const onOk = () => {
+    form.submit();
+  };
+  return (
+    <Modal
+      open={open}
+      title="Create a new Publisher"
+      okText="Create"
+      cancelText="Cancel"
+      onCancel={onCancel}
+      onOk={() => {
+        form
+          .validateFields()
+          .then((values) => {
+            form.resetFields();
+            onCreate(values);
+          })
+          .catch((info) => {
+            console.log('Validate Failed:', info);
+          });
+      }}
+    >
+      <Form
+        form={form}
+        autoComplete="off"
+        layout="vertical"
+        name="form_in_modal"
+        // initialValues={{
+        //   modifier: 'public',
+        // }}
+      >
+        <Form.Item
+            name="name"
+            label="Name"
+            rules={[
+              {
+                required: true,
+                message: "Please enter your name",
+              },
+              { whitespace: true },
+              { min: 3 },
+            ]}
+            hasFeedback
+          >
+            <Input placeholder="Type your name" />
+          </Form.Item>
+        {/* <Form.Item
+          name="title"
+          label="Title"
+          rules={[
+            {
+              required: true,
+              message: 'Please input the title of collection!',
+            },
+          ]}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item name="description" label="Description">
+          <Input type="textarea" />
+        </Form.Item>
+        <Form.Item name="modifier" className="collection-create-form_last-form-item">
+          <Radio.Group>
+            <Radio value="public">Public</Radio>
+            <Radio value="private">Private</Radio>
+          </Radio.Group>
+        </Form.Item> */}
+      </Form>
+    </Modal>
+  );
+};
+
 export default function PublisherPage() {
   const [open, setOpen] = useState(null);
 
@@ -103,6 +191,14 @@ export default function PublisherPage() {
   const [error, setError] = useState(null);
 
   const APIUrl = "https://localhost:44301/api/publishers";
+
+  //modal create button
+  const [openModal, setOpenModal] = useState(false);
+
+  const onCreate = (values) => {
+    console.log('Received values of form: ', values);
+    setOpenModal(false);
+  };
 
   useEffect(() => {
     fetch(APIUrl+"?page=1&pageSize=25")
@@ -203,9 +299,22 @@ export default function PublisherPage() {
           <Typography variant="h4" gutterBottom>
             Publisher
           </Typography>
-          <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
+          <Button
+            variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}
+            type="primary"
+            onClick={() => {
+              setOpenModal(true);
+            }}
+          >
             New Publisher
           </Button>
+          <CollectionCreateForm
+            open={openModal}
+            onCreate={onCreate}
+            onCancel={() => {
+              setOpenModal(false);
+            }}
+          />
         </Stack>
 
         <Card>
