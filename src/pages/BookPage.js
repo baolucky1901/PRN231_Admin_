@@ -139,50 +139,50 @@ const CollectionCreateForm = ({ open, onCreate, onCancel }) => {
   }, []);
 
 
-  const handleUpload = ({ file, fileList }) => {
-    if (file.status === 'done') {
-      console.log(`${file.name} uploaded successfully`);
-    } else if (file.status === 'error') {
-      console.log(`${file.name} upload failed.`);
-    }
-    setFileList(fileList);
-  };
-   
-  console.log(fileList);
-  // const onFilesUploadChange = async (e) => {
-  //   const fileInput = e.target;
-
-  //   if (!fileInput.files) {
-  //     alert("No files were chosen");
-  //     return;
+  // const handleUpload = ({ file, fileList }) => {
+  //   if (file.status === 'done') {
+  //     console.log(`${file.name} uploaded successfully`);
+  //   } else if (file.status === 'error') {
+  //     console.log(`${file.name} upload failed.`);
   //   }
-
-  //   if (!fileInput.files || fileInput.files.length === 0) {
-  //     alert("Files list is empty");
-  //     return;
-  //   }
-
-  //   /** Files validation */
-  //   const validFiles = [];
-  //   for (let i = 0; i < fileInput.files.length; i++) {
-  //     const file = fileInput.files[i];
-
-  //     if (!file.type.startsWith("image")) {
-  //       alert(`File with idx: ${i} is invalid`);
-  //       continue;
-  //     }
-
-  //     validFiles.push(file);
-  //   }
-
-  //   if (!validFiles.length) {
-  //     alert("No valid files were chosen");
-  //     return;
-  //   }
-
-  //   upLoadAllImage(validFiles, setPreviewUrls);
+  //   setFileList(fileList);
   // };
-  // console.log("img", previewUrls);
+   
+  // console.log(fileList);
+  const onFilesUploadChange = async (e) => {
+    const fileInput = e.target;
+
+    if (!fileInput.files) {
+      alert("No files were chosen");
+      return;
+    }
+
+    if (!fileInput.files || fileInput.files.length === 0) {
+      alert("Files list is empty");
+      return;
+    }
+
+    /** Files validation */
+    const validFiles = [];
+    for (let i = 0; i < fileInput.files.length; i++) {
+      const file = fileInput.files[i];
+
+      if (!file.type.startsWith("image")) {
+        alert(`File with idx: ${i} is invalid`);
+        continue;
+      }
+
+      validFiles.push(file);
+    }
+
+    if (!validFiles.length) {
+      alert("No valid files were chosen");
+      return;
+    }
+
+    upLoadAllImage(validFiles, setPreviewUrls);
+  };
+  console.log("img", previewUrls);
 
   const [form] = Form.useForm();
   const onOk = () => {
@@ -326,7 +326,7 @@ const CollectionCreateForm = ({ open, onCreate, onCancel }) => {
             { min: 1 },
           ]}
           valuePropName="fileList">
-          <Upload beforeUpload={() => false} listType="picture-card" fileList={fileList}
+          {/* <Upload beforeUpload={() => false} listType="picture-card" fileList={fileList}
           onChange={handleUpload}>
             <div>
               <PlusOutlined />
@@ -338,14 +338,14 @@ const CollectionCreateForm = ({ open, onCreate, onCancel }) => {
                 Images
               </div>
             </div>
-          </Upload>
-          {/* <input
+          </Upload> */}
+          <input
             className="block w-0 h-0"
             type="file"
             onChange={onFilesUploadChange}
             multiple
             hidden
-          /> */}
+          />
         </Form.Item>
 
         <Form.Item
@@ -448,31 +448,31 @@ export default function BookPage() {
 
   const onCreate = (values) => {
     console.log('Received values of form: ', values);
-    // let addData = {name: values.name, isbn: values.isbn, author: values.author, releaseYear: values.releaseYear, version: values.version, price: values.price, description: values.description, amount: values.amount, categoryId: values.categoryName, publisherId: values.publisherName};
-    // const requestOptions = {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify(addData)
-    // };
-    // fetch('https://localhost:44301/api/books/book', requestOptions)
-    //   .then(response => response.json())
-    //   .then(data => previewUrls.map((url) => {
-    //     let requestImageData = {
-    //       imgPath: url,
-    //       requestSellSecondHandId: data.data,
-    //     };
-    //     console.log(requestImageData);
+    let addData = {name: values.name, isbn: values.isbn, author: values.author, releaseYear: values.releaseYear, version: values.version, price: values.price, description: values.description, amount: values.amount, categoryId: values.categoryName, publisherId: values.publisherName};
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(addData)
+    };
+    fetch('https://localhost:44301/api/books/book', requestOptions)
+      .then(response => response.json())
+      .then(data => previewUrls.map((url) => {
+        let requestImageData = {
+          imgPath: url,
+          requestSellSecondHandId: data.data,
+        };
+        console.log(requestImageData);
   
-    //     return fetch(
-    //       "https://localhost:44301/api/book-images/book-image",
-    //       {
-    //         method: "POST",
-    //         body: JSON.stringify(requestImageData),
-    //         headers: { "Content-Type": "application/json" },
-    //       }
-    //     );
-    //   }))
-    //   .catch(error => console.error(error));
+        return fetch(
+          "https://localhost:44301/api/book-images/book-image",
+          {
+            method: "POST",
+            body: JSON.stringify(requestImageData),
+            headers: { "Content-Type": "application/json" },
+          }
+        );
+      }))
+      .catch(error => console.error(error));
     setOpenModal(false);
   };
 
