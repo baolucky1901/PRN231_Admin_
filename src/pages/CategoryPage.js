@@ -97,6 +97,24 @@ function applySortFilter(array, comparator, query) {
 }
 
 const CollectionCreateForm = ({ open, onCreate, onCancel }) => {
+  const [name, SetName] = useState('');
+  const [description, SetDescription] = useState('');
+
+  const handleCreateCategory = () => {
+    // event.preventDefault();
+    let addData = {name: name, description: description};
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(addData)
+    };
+    fetch('https://localhost:44301/api/categories/category', requestOptions)
+      .then(response => response.json())
+      .then(data => console.log(data))
+      .catch(error => console.error(error));
+  }
+
+
   const [form] = Form.useForm();
   const onOk = () => {
     form.submit();
@@ -114,6 +132,7 @@ const CollectionCreateForm = ({ open, onCreate, onCancel }) => {
           .then((values) => {
             form.resetFields();
             onCreate(values);
+            handleCreateCategory();
           })
           .catch((info) => {
             console.log('Validate Failed:', info);
@@ -142,7 +161,7 @@ const CollectionCreateForm = ({ open, onCreate, onCancel }) => {
             ]}
             hasFeedback
           >
-            <Input placeholder="Type your name" />
+            <Input placeholder="Type your name" onChange={(e) => SetName(e.target.value)}/>
           </Form.Item>
 
         <Form.Item  
@@ -157,7 +176,7 @@ const CollectionCreateForm = ({ open, onCreate, onCancel }) => {
             placeholder="Type something" 
             rows={4} 
             showCount 
-            maxLength={500}  
+            maxLength={500} onChange={(e) => SetDescription(e.target.value)}
           />
         </Form.Item>
         {/* <Form.Item
@@ -239,7 +258,7 @@ export default function CategoryPage() {
         setLoading(false);
       });
       
-  }, []);
+  }, [data]);
 
   const handleOpenMenu = (event) => {
     setOpen(event.currentTarget);
@@ -373,7 +392,9 @@ export default function CategoryPage() {
                             </Typography>
                           </Stack>
                         </TableCell>
-
+                        <TableCell align="left">
+                          {isActive === true ? <Label color={('success')}>Active</Label> : <Label color={('error')}>Inactive</Label>}
+                        </TableCell>
                         <TableCell align="right">
                           <IconButton size="large" color="inherit" onClick={handleOpenMenu}>
                             <Iconify icon={'eva:more-vertical-fill'} />
