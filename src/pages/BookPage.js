@@ -4,7 +4,9 @@ import { sentenceCase } from 'change-case';
 import { useState, useEffect } from 'react';
 // @antd
 import { PlusOutlined } from '@ant-design/icons';
-import { Form, Input, Modal, Radio, InputNumber, Row, Col, Select, Upload } from 'antd';
+import { Form, Input, Modal, Radio, InputNumber, Row, Col, Select, Upload, message } from 'antd';
+import { UploadOutlined } from '@ant-design/icons';
+
 // @mui
 import {
   Card,
@@ -33,6 +35,10 @@ import Scrollbar from '../components/scrollbar';
 import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
 // mock
 import USERLIST from '../_mock/user';
+import { upLoadAllImage } from "../firebase/firebase";
+
+//firebase
+
 
 // ----------------------------------------------------------------------
 
@@ -95,6 +101,89 @@ function applySortFilter(array, comparator, query) {
 }
 
 const CollectionCreateForm = ({ open, onCreate, onCancel }) => {
+  const [dataCate, SetDataCate] = useState([{"data" : []}]);
+  const [dataPub, SetDataPub] = useState([{"data" : []}]);
+  const [previewUrls, setPreviewUrls] = useState([]);
+  const [fileList, setFileList] = useState([]);
+
+  const APIUrlCate = "https://localhost:44301/api/categories/cus?";
+  const APIUrlPublisher = "https://localhost:44301/api/publishers/cus?";
+  useEffect(() => {
+    fetch(APIUrlCate+"?page=1&pageSize=25")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(
+            `This is an HTTP error: The status is ${response.status}`
+          );
+        }
+        return response.json();
+      })
+      .then((responsedata) => {
+        SetDataCate(responsedata.data); 
+        // console.log("Check fetch data", responsedata.data)
+      });
+      fetch(APIUrlPublisher+"?page=1&pageSize=25")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(
+            `This is an HTTP error: The status is ${response.status}`
+          );
+        }
+        return response.json();
+      })
+      .then((responsedata) => {
+        SetDataPub(responsedata.data); 
+        // console.log("Check fetch data", responsedata.data)
+      })
+      
+  }, []);
+
+
+  const handleUpload = ({ file, fileList }) => {
+    if (file.status === 'done') {
+      console.log(`${file.name} uploaded successfully`);
+    } else if (file.status === 'error') {
+      console.log(`${file.name} upload failed.`);
+    }
+    setFileList(fileList);
+  };
+   
+  console.log(fileList);
+  // const onFilesUploadChange = async (e) => {
+  //   const fileInput = e.target;
+
+  //   if (!fileInput.files) {
+  //     alert("No files were chosen");
+  //     return;
+  //   }
+
+  //   if (!fileInput.files || fileInput.files.length === 0) {
+  //     alert("Files list is empty");
+  //     return;
+  //   }
+
+  //   /** Files validation */
+  //   const validFiles = [];
+  //   for (let i = 0; i < fileInput.files.length; i++) {
+  //     const file = fileInput.files[i];
+
+  //     if (!file.type.startsWith("image")) {
+  //       alert(`File with idx: ${i} is invalid`);
+  //       continue;
+  //     }
+
+  //     validFiles.push(file);
+  //   }
+
+  //   if (!validFiles.length) {
+  //     alert("No valid files were chosen");
+  //     return;
+  //   }
+
+  //   upLoadAllImage(validFiles, setPreviewUrls);
+  // };
+  // console.log("img", previewUrls);
+
   const [form] = Form.useForm();
   const onOk = () => {
     form.submit();
@@ -102,7 +191,7 @@ const CollectionCreateForm = ({ open, onCreate, onCancel }) => {
   return (
     <Modal
       open={open}
-      title="Create a new Category"
+      title="Create a new Book"
       okText="Create"
       cancelText="Cancel"
       onCancel={onCancel}
@@ -140,7 +229,7 @@ const CollectionCreateForm = ({ open, onCreate, onCancel }) => {
             ]}
             hasFeedback
           >
-            <Input placeholder="Type your name" />
+            <Input placeholder="Type your name"/>
         </Form.Item>
 
         <Form.Item
@@ -148,7 +237,7 @@ const CollectionCreateForm = ({ open, onCreate, onCancel }) => {
             label="ISBN"
             rules={[{ required: true, message: 'Please input ISBN' }]}
           >
-            <Input placeholder="Type your ISBN" />
+            <Input placeholder="Type your ISBN"/>
         </Form.Item>
 
         <Form.Item
@@ -164,7 +253,7 @@ const CollectionCreateForm = ({ open, onCreate, onCancel }) => {
             ]}
             hasFeedback
           >
-            <Input placeholder="Type your author" />
+            <Input placeholder="Type your author"/>
         </Form.Item>
 
         <Form.Item
@@ -179,55 +268,55 @@ const CollectionCreateForm = ({ open, onCreate, onCancel }) => {
             ]}
             hasFeedback
           >
-            <Input placeholder="Type your release" />
+            <Input placeholder="Type your release"/>
         </Form.Item>
 
         <Row gutter={8}>
           <Col span={8}>
             <Form.Item label="Version">
               <Form.Item 
-                name="input-version" 
+                name="version" 
                 rules={[{ 
                   required: true, 
                   message: 'Please type your version number' 
                 }]} 
                 noStyle
               >
-                <InputNumber min={1} max={20} />
+                <InputNumber min={1} max={20}/>
               </Form.Item>
             </Form.Item>
           </Col>
           <Col span={8}>
             <Form.Item label="Price">
               <Form.Item 
-                name="input-price" 
+                name="price" 
                 rules={[{ 
                   required: true, 
                   message: 'Please type your price number' 
                 }]} 
                 noStyle
               >
-                <InputNumber min={0} />
+                <InputNumber min={0}/>
               </Form.Item>
             </Form.Item>
           </Col>
           <Col span={8}>
             <Form.Item label="Amount">
               <Form.Item 
-                name="input-amount"
+                name="amount"
                 rules={[{ 
                   required: true, 
                   message: 'Please type your amount number' 
                 }]} 
                 noStyle
                 >
-                <InputNumber min={1} max={3000} />
+                <InputNumber min={1} max={3000}/>
               </Form.Item>
             </Form.Item>
           </Col>
         </Row>
 
-        <Form.Item 
+         <Form.Item 
           label="Upload" 
           rules={[
             { 
@@ -235,9 +324,10 @@ const CollectionCreateForm = ({ open, onCreate, onCancel }) => {
             message: 'Please upload your image', 
             },
             { min: 1 },
-          ]} 
+          ]}
           valuePropName="fileList">
-          <Upload action="/upload.do" listType="picture-card">
+          <Upload beforeUpload={() => false} listType="picture-card" fileList={fileList}
+          onChange={handleUpload}>
             <div>
               <PlusOutlined />
               <div
@@ -249,6 +339,13 @@ const CollectionCreateForm = ({ open, onCreate, onCancel }) => {
               </div>
             </div>
           </Upload>
+          {/* <input
+            className="block w-0 h-0"
+            type="file"
+            onChange={onFilesUploadChange}
+            multiple
+            hidden
+          /> */}
         </Form.Item>
 
         <Form.Item
@@ -258,8 +355,11 @@ const CollectionCreateForm = ({ open, onCreate, onCancel }) => {
           rules={[{ required: true, message: 'Please select your category' }]}
         >
           <Select placeholder="Please select a category">
-            <Option value="1">Computer science and algorithms</Option>
-            <Option value="2">Cartoon</Option>
+          {dataCate.map(option => (
+            <option key={option.id} value={option.id}>{option.name}</option>
+          ))}
+            {/* <Option value="1">Computer science and algorithms</Option>
+            <Option value="2">Cartoon</Option> */}
           </Select>
         </Form.Item>
 
@@ -270,8 +370,11 @@ const CollectionCreateForm = ({ open, onCreate, onCancel }) => {
           rules={[{ required: true, message: 'Please select your publisher' }]}
         >
           <Select placeholder="Please select a publisher">
-            <Option value="1">Bach Khoa Ha Noi</Option>
-            <Option value="2">Conan</Option>
+          {dataPub.map(option => (
+            <option key={option.id} value={option.id}>{option.name}</option>
+          ))}
+            {/* <Option value="1">Bach Khoa Ha Noi</Option>
+            <Option value="2">Conan</Option> */}
           </Select>
         </Form.Item>
 
@@ -288,6 +391,7 @@ const CollectionCreateForm = ({ open, onCreate, onCancel }) => {
             rows={4} 
             showCount 
             maxLength={500}  
+            
           />
         </Form.Item>
         {/* <Form.Item
@@ -344,6 +448,31 @@ export default function BookPage() {
 
   const onCreate = (values) => {
     console.log('Received values of form: ', values);
+    // let addData = {name: values.name, isbn: values.isbn, author: values.author, releaseYear: values.releaseYear, version: values.version, price: values.price, description: values.description, amount: values.amount, categoryId: values.categoryName, publisherId: values.publisherName};
+    // const requestOptions = {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify(addData)
+    // };
+    // fetch('https://localhost:44301/api/books/book', requestOptions)
+    //   .then(response => response.json())
+    //   .then(data => previewUrls.map((url) => {
+    //     let requestImageData = {
+    //       imgPath: url,
+    //       requestSellSecondHandId: data.data,
+    //     };
+    //     console.log(requestImageData);
+  
+    //     return fetch(
+    //       "https://localhost:44301/api/book-images/book-image",
+    //       {
+    //         method: "POST",
+    //         body: JSON.stringify(requestImageData),
+    //         headers: { "Content-Type": "application/json" },
+    //       }
+    //     );
+    //   }))
+    //   .catch(error => console.error(error));
     setOpenModal(false);
   };
 
