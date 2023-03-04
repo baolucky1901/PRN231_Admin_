@@ -96,6 +96,22 @@ function applySortFilter(array, comparator, query) {
 }
 
 const CollectionCreateForm = ({ open, onCreate, onCancel }) => {
+  const [namePublisher, SetNamePublisher] = useState('');
+
+  const handleCreatePublisher = () => {
+    // event.preventDefault();
+    let addData = {name: namePublisher};
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(addData)
+    };
+    fetch('https://localhost:44301/api/publishers/publisher', requestOptions)
+      .then(response => response.json())
+      .then(data => console.log(data))
+      .catch(error => console.error(error));
+  }
+
   const [form] = Form.useForm();
   const onOk = () => {
     form.submit();
@@ -113,6 +129,7 @@ const CollectionCreateForm = ({ open, onCreate, onCancel }) => {
           .then((values) => {
             form.resetFields();
             onCreate(values);
+            handleCreatePublisher();
           })
           .catch((info) => {
             console.log('Validate Failed:', info);
@@ -141,7 +158,7 @@ const CollectionCreateForm = ({ open, onCreate, onCancel }) => {
             ]}
             hasFeedback
           >
-            <Input placeholder="Type your name" />
+            <Input placeholder="Type your name" onChange={(e) => SetNamePublisher(e.target.value)}/>
           </Form.Item>
         {/* <Form.Item
           name="title"
@@ -222,7 +239,7 @@ export default function PublisherPage() {
         setLoading(false);
       });
       
-  }, []);
+  }, [data]);
 
   const handleOpenMenu = (event) => {
     setOpen(event.currentTarget);

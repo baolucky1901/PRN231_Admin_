@@ -1,7 +1,21 @@
 import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
 import { sentenceCase } from 'change-case';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+// @antd
+import { Form,
+  Input,
+  // Button,
+  Modal,
+  Radio,
+  Select,
+  Cascader,
+  DatePicker,
+  InputNumber,
+  TreeSelect,
+  Switch,
+  Checkbox,
+  Upload, } from 'antd';
 // @mui
 import {
   Card,
@@ -11,7 +25,7 @@ import {
   Avatar,
   Button,
   Popover,
-  Checkbox,
+  // Checkbox,
   TableRow,
   MenuItem,
   TableBody,
@@ -32,14 +46,28 @@ import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
 import USERLIST from '../_mock/user';
 
 // ----------------------------------------------------------------------
+const { TextArea } = Input;
+
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'Name', alignRight: false },
-  { id: 'company', label: 'Company', alignRight: false },
-  { id: 'role', label: 'Role', alignRight: false },
-  { id: 'isVerified', label: 'Verified', alignRight: false },
-  { id: 'status', label: 'Status', alignRight: false },
+  // { id: 'name', label: 'Name', alignRight: false },
+  // { id: 'company', label: 'Company', alignRight: false },
+  // { id: 'role', label: 'Role', alignRight: false },
+  // { id: 'isVerified', label: 'Verified', alignRight: false },
+  // { id: 'status', label: 'Status', alignRight: false },
+  // { id: '' },
+  { id: 'id', label: 'Id', alignRight: false },
+  { id: 'customerName', label: 'Customer Name', alignRight: false },
+  { id: 'totalPrice', label: 'Total Bill', alignRight: false },
+  { id: 'createDate', label: 'Date Created', alignRight: false },
+  { id: 'shippingAddress', label: 'Shipping Address', alignRight: false },
+  { id: 'paymentMethod', label: 'Payment method', alignRight: false },
+  { id: 'orderStatus', label: 'Status', alignRight: false },
   { id: '' },
+  // { id: 'userId', label: 'User Id', alignRight: false },
+  // { id: 'id', label: 'Id', alignRight: false },
+  // { id: 'title', label: 'Title', alignRight: false },
+  // { id: 'body', label: 'Body', alignRight: false },
 ];
 
 // ----------------------------------------------------------------------
@@ -68,25 +96,155 @@ function applySortFilter(array, comparator, query) {
     return a[1] - b[1];
   });
   if (query) {
-    return filter(array, (_user) => _user.name.toLowerCase().indexOf(query.toLowerCase()) !== -1);
+    return filter(array, (_user) => _user.customerName.toLowerCase().indexOf(query.toLowerCase()) !== -1);
   }
   return stabilizedThis.map((el) => el[0]);
 }
+
+// const CollectionCreateForm = ({ open, onCreate, onCancel }) => {
+//   const [form] = Form.useForm();
+//   const onOk = () => {
+//     form.submit();
+//   };
+//   return (
+//     <Modal
+//       open={open}
+//       title="Create a new Order"
+//       okText="Create"
+//       cancelText="Cancel"
+//       onCancel={onCancel}
+//       onOk={() => {
+//         form
+//           .validateFields()
+//           .then((values) => {
+//             form.resetFields();
+//             onCreate(values);
+//           })
+//           .catch((info) => {
+//             console.log('Validate Failed:', info);
+//           });
+//       }}
+//     >
+//       <Form
+//         form={form}
+//         autoComplete="off"
+//         layout="vertical"
+//         name="form_in_modal"
+//         // initialValues={{
+//         //   modifier: 'public',
+//         // }}
+//       >
+//         <Form.Item
+//             name="name"
+//             label="Name"
+//             rules={[
+//               {
+//                 required: true,
+//                 message: "Please enter your name",
+//               },
+//               { whitespace: true },
+//               { min: 3 },
+//             ]}
+//             hasFeedback
+//           >
+//             <Input placeholder="Type your name" />
+//           </Form.Item>
+
+//         <Form.Item  
+//             name="description" 
+//             label="Description"
+//             rules={[
+//               { whitespace: true },
+//             ]}
+//             requiredMark="optional"
+//         >
+//           <TextArea 
+//             placeholder="Type something" 
+//             rows={4} 
+//             showCount 
+//             maxLength={500}  
+//           />
+//         </Form.Item>
+//         {/* <Form.Item
+//           name="title"
+//           label="Title"
+//           rules={[
+//             {
+//               required: true,
+//               message: 'Please input the title of collection!',
+//             },
+//           ]}
+//         >
+//           <Input />
+//         </Form.Item>
+//         <Form.Item name="description" label="Description">
+//           <Input type="textarea" />
+//         </Form.Item>
+//         <Form.Item name="modifier" className="collection-create-form_last-form-item">
+//           <Radio.Group>
+//             <Radio value="public">Public</Radio>
+//             <Radio value="private">Private</Radio>
+//           </Radio.Group>
+//         </Form.Item> */}
+//       </Form>
+//     </Modal>
+//   );
+// };
 
 export default function OrderPage() {
   const [open, setOpen] = useState(null);
 
   const [page, setPage] = useState(0);
 
-  const [order, setOrder] = useState('asc');
+  const [order, setOrder] = useState('desc');
 
   const [selected, setSelected] = useState([]);
 
-  const [orderBy, setOrderBy] = useState('name');
+  const [orderBy, setOrderBy] = useState('id');
 
   const [filterName, setFilterName] = useState('');
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  const [data, setData] = useState([{"data" : []}]);
+
+  const [loading, setLoading] = useState(true);
+ 
+  const [error, setError] = useState(null);
+
+  const APIUrl = "https://localhost:44301/api/orders/admin?";
+
+  //modal create button
+  const [openModal, setOpenModal] = useState(false);
+
+  const onCreate = (values) => {
+    console.log('Received values of form: ', values);
+    setOpenModal(false);
+  };
+
+  useEffect(() => {
+    fetch(APIUrl+"?page=1&pageSize=25")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(
+            `This is an HTTP error: The status is ${response.status}`
+          );
+        }
+        return response.json();
+      })
+      .then((responsedata) => {
+        setData(responsedata.data); 
+        // console.log("Check fetch data", responsedata.data)
+      })
+      .catch((err) => {
+        setError(err.message);
+        setData(null);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+      
+  }, [data]);
 
   const handleOpenMenu = (event) => {
     setOpen(event.currentTarget);
@@ -104,7 +262,7 @@ export default function OrderPage() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = USERLIST.map((n) => n.name);
+      const newSelecteds = data.map((n) => n.name);
       setSelected(newSelecteds);
       return;
     }
@@ -140,9 +298,10 @@ export default function OrderPage() {
     setFilterName(event.target.value);
   };
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - USERLIST.length) : 0;
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - data.length) : 0;
 
-  const filteredUsers = applySortFilter(USERLIST, getComparator(order, orderBy), filterName);
+  const filteredUsers = applySortFilter(data, getComparator(order, orderBy), filterName);
+  console.log(filteredUsers)
 
   const isNotFound = !filteredUsers.length && !!filterName;
 
@@ -152,14 +311,35 @@ export default function OrderPage() {
         <title> Order | Minimal UI </title>
       </Helmet>
 
+        {loading && <div>A moment please...</div>}
+        {error && (
+        <div>{`There is a problem fetching the post data - ${error}`}</div>
+        )}
+
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
             Order
           </Typography>
-          <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
-            New Order
-          </Button>
+          {/* <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
+            New Category
+          </Button> */}
+          {/* <Button
+            variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}
+            type="primary"
+            onClick={() => {
+              setOpenModal(true);
+            }}
+          >
+            New Category
+          </Button> */}
+          {/* <CollectionCreateForm
+            open={openModal}
+            onCreate={onCreate}
+            onCancel={() => {
+              setOpenModal(false);
+            }}
+          /> */}
         </Stack>
 
         <Card>
@@ -172,39 +352,83 @@ export default function OrderPage() {
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
-                  rowCount={USERLIST.length}
+                  rowCount={data.length}
                   numSelected={selected.length}
                   onRequestSort={handleRequestSort}
                   onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
                   {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { id, name, role, status, company, avatarUrl, isVerified } = row;
-                    const selectedUser = selected.indexOf(name) !== -1;
+                    // const { id, name, email, imgPath, isActive } = row;
+                    const selectedUser = selected.indexOf(row.id) !== -1;
 
                     return (
-                      <TableRow hover key={id} tabIndex={-1} role="checkbox" selected={selectedUser}>
-                        <TableCell padding="checkbox">
-                          <Checkbox checked={selectedUser} onChange={(event) => handleClick(event, name)} />
-                        </TableCell>
+                      <TableRow hover key={row.id} tabIndex={-1} role="checkbox" selected={selectedUser}>
+                        {/* <TableCell padding="checkbox">
+                          <Checkbox checked={selectedUser} onChange={(event) => handleClick(event, id)} />
+                        </TableCell> */}
 
-                        <TableCell component="th" scope="row" padding="none">
+                        <TableCell align="left">{row.id}</TableCell>
+
+                        <TableCell component="th" scope="row">
                           <Stack direction="row" alignItems="center" spacing={2}>
-                            <Avatar alt={name} src={avatarUrl} />
+                            {/* <Avatar alt={name} src={imgPath} /> */}
                             <Typography variant="subtitle2" noWrap>
-                              {name}
+                              {row.customerName}
                             </Typography>
                           </Stack>
                         </TableCell>
 
-                        <TableCell align="left">{company}</TableCell>
+                        <TableCell component="th" scope="row">
+                          <Stack direction="row" alignItems="center" spacing={2}>
+                            {/* <Avatar alt={name} src={imgPath} /> */}
+                            <Typography variant="subtitle2" noWrap>
+                              {row.totalPrice}
+                            </Typography>
+                          </Stack>
+                        </TableCell>
 
-                        <TableCell align="left">{role}</TableCell>
+                        <TableCell component="th" scope="row">
+                          <Stack direction="row" alignItems="center" spacing={2}>
+                            {/* <Avatar alt={name} src={imgPath} /> */}
+                            <Typography variant="subtitle2" noWrap>
+                              {row.createDate}
+                            </Typography>
+                          </Stack>
+                        </TableCell>
 
-                        <TableCell align="left">{isVerified ? 'Yes' : 'No'}</TableCell>
+                        <TableCell component="th" scope="row">
+                          <Stack direction="row" alignItems="center" spacing={2}>
+                            {/* <Avatar alt={name} src={imgPath} /> */}
+                            <Typography variant="subtitle2" noWrap>
+                              {row.shippingAddress}
+                            </Typography>
+                          </Stack>
+                        </TableCell>
+                        <TableCell component="th" scope="row">
+                          <Stack direction="row" alignItems="center" spacing={2}>
+                            {/* <Avatar alt={name} src={imgPath} /> */}
+                            <Typography variant="subtitle2" noWrap>
+                              {row.paymentMethod}
+                            </Typography>
+                          </Stack>
+                        </TableCell>
 
-                        <TableCell align="left">
-                          <Label color={(status === 'banned' && 'error') || 'success'}>{sentenceCase(status)}</Label>
+                        <TableCell component="th" scope="row">
+                          <Stack direction="row" alignItems="center" spacing={2}>
+                            {/* <Avatar alt={name} src={imgPath} /> */}
+                            <Typography variant="subtitle2" noWrap>
+                            {row.orderStatus === "In_Progress" ?
+                             <Label color={('warning')}>In_Progress</Label> : row.orderStatus === "Accepted" ?
+                             <Label color={('primary')}>Accepted</Label> : row.orderStatus === "Paid" ?
+                             <Label color={('default')}>Paid</Label> :  row.orderStatus === "Physical_book_delivered" ?
+                             <Label color={('secondary')}>Physical_book_delivered</Label> : row.orderStatus === "Ebook_delivered" ?
+                             <Label color={('secondary')}>Ebook_delivered</Label> : row.orderStatus === "Done" ?
+                             <Label color={('success')}>Done</Label> : row.orderStatus === "Cancel" ?
+                             <Label color={('error')}>Cancel</Label> : <></>
+                            }
+                            </Typography>
+                          </Stack>
                         </TableCell>
 
                         <TableCell align="right">
@@ -252,7 +476,7 @@ export default function OrderPage() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={USERLIST.length}
+            count={data.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}
@@ -279,7 +503,7 @@ export default function OrderPage() {
           },
         }}
       >
-        <MenuItem>
+        {/* <MenuItem>
           <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
           Edit
         </MenuItem>
@@ -287,6 +511,18 @@ export default function OrderPage() {
         <MenuItem sx={{ color: 'error.main' }}>
           <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }} />
           Delete
+        </MenuItem> */}
+        <MenuItem>
+          Accepted
+        </MenuItem>
+        <MenuItem>
+          Paid
+        </MenuItem>
+        <MenuItem>
+          Done
+        </MenuItem>
+        <MenuItem>
+          Cancel
         </MenuItem>
       </Popover>
     </>
