@@ -339,7 +339,7 @@ export default function OrderPage() {
                           <Button href={`order/paid/${row.id}`}>Paid</Button>
                         </TableCell>:<></>
                         }
-                        {row.orderStatus === "Paid"?
+                        {row.orderStatus === "Paid" || row.orderStatus === "Ebook_delivered"?
                         <TableCell align='right'>
                           <Button href={`order/done/${row.id}`}>Done</Button>
                         </TableCell>:<></>

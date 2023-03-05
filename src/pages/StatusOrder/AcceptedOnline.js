@@ -182,7 +182,7 @@ export default function AcceptedOnlinePage() {
 
   const navigate = useNavigate();
   const handleChangeStatusToAccepted = async () => {
-    const response = await fetch('/api/orders/order/order-status/accepted-online-payment?orderId='+ordId, {
+    const response = await fetch('https://localhost:44301/api/orders/order/order-status/accepted-online-payment?orderId='+ordId, {
       method: 'PUT',
       body: JSON.stringify({ /* data to be sent in the request body */ }),
       // headers: { 'Content-Type': 'application/json' }
