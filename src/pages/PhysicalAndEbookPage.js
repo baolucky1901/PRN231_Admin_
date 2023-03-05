@@ -2,7 +2,6 @@ import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
 import { sentenceCase } from 'change-case';
 import { useState, useEffect } from 'react';
-// @antd
 import { PlusOutlined } from '@ant-design/icons';
 import { Form, Input, Modal, Radio, InputNumber, Row, Col, Select, Upload, message } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
@@ -16,7 +15,7 @@ import {
   Avatar,
   Button,
   Popover,
-  Checkbox,
+  // Checkbox,
   TableRow,
   MenuItem,
   TableBody,
@@ -35,24 +34,13 @@ import Scrollbar from '../components/scrollbar';
 import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
 // mock
 import USERLIST from '../_mock/user';
-import { upLoadAllImage } from "../firebase/firebase";
-
-//firebase
-
 
 // ----------------------------------------------------------------------
-
 const { TextArea } = Input;
-
 const { Option } = Select;
 
 const TABLE_HEAD = [
-  // { id: 'name', label: 'Name', alignRight: false },
-  // { id: 'company', label: 'Company', alignRight: false },
-  // { id: 'role', label: 'Role', alignRight: false },
-  // { id: 'isVerified', label: 'Verified', alignRight: false },
-  // { id: 'status', label: 'Status', alignRight: false },
-  // { id: '' },
+
   { id: 'id', label: 'Id', alignRight: false },
   { id: 'name', label: 'Name', alignRight: false },
   { id: 'price', label: 'Price', alignRight: true },
@@ -63,12 +51,7 @@ const TABLE_HEAD = [
   { id: 'publisherName', label: 'Publisher', alignRight: false },
   { id: 'isActive', label: 'Active', alignRight: false },
   { id: '' },
-  // { id: 'userId', label: 'User Id', alignRight: false },
-  // { id: 'id', label: 'Id', alignRight: false },
-  // { id: 'title', label: 'Title', alignRight: false },
-  // { id: 'body', label: 'Body', alignRight: false },
 ];
-
 // ----------------------------------------------------------------------
 
 function descendingComparator(a, b, orderBy) {
@@ -99,7 +82,6 @@ function applySortFilter(array, comparator, query) {
   }
   return stabilizedThis.map((el) => el[0]);
 }
-
 const CollectionCreateForm = ({ open, onCreate, onCancel }) => {
   const [dataCate, SetDataCate] = useState([{"data" : []}]);
   const [dataPub, SetDataPub] = useState([{"data" : []}]);
@@ -139,50 +121,50 @@ const CollectionCreateForm = ({ open, onCreate, onCancel }) => {
   }, []);
 
 
-  // const handleUpload = ({ file, fileList }) => {
-  //   if (file.status === 'done') {
-  //     console.log(`${file.name} uploaded successfully`);
-  //   } else if (file.status === 'error') {
-  //     console.log(`${file.name} upload failed.`);
-  //   }
-  //   setFileList(fileList);
-  // };
-   
-  // console.log(fileList);
-  const onFilesUploadChange = async (e) => {
-    const fileInput = e.target;
-
-    if (!fileInput.files) {
-      alert("No files were chosen");
-      return;
+  const handleUpload = ({ file, fileList }) => {
+    if (file.status === 'done') {
+      console.log(`${file.name} uploaded successfully`);
+    } else if (file.status === 'error') {
+      console.log(`${file.name} upload failed.`);
     }
-
-    if (!fileInput.files || fileInput.files.length === 0) {
-      alert("Files list is empty");
-      return;
-    }
-
-    /** Files validation */
-    const validFiles = [];
-    for (let i = 0; i < fileInput.files.length; i++) {
-      const file = fileInput.files[i];
-
-      if (!file.type.startsWith("image")) {
-        alert(`File with idx: ${i} is invalid`);
-        continue;
-      }
-
-      validFiles.push(file);
-    }
-
-    if (!validFiles.length) {
-      alert("No valid files were chosen");
-      return;
-    }
-
-    upLoadAllImage(validFiles, setPreviewUrls);
+    setFileList(fileList);
   };
-  console.log("img", previewUrls);
+   
+  console.log(fileList);
+  // const onFilesUploadChange = async (e) => {
+  //   const fileInput = e.target;
+
+  //   if (!fileInput.files) {
+  //     alert("No files were chosen");
+  //     return;
+  //   }
+
+  //   if (!fileInput.files || fileInput.files.length === 0) {
+  //     alert("Files list is empty");
+  //     return;
+  //   }
+
+  //   /** Files validation */
+  //   const validFiles = [];
+  //   for (let i = 0; i < fileInput.files.length; i++) {
+  //     const file = fileInput.files[i];
+
+  //     if (!file.type.startsWith("image")) {
+  //       alert(`File with idx: ${i} is invalid`);
+  //       continue;
+  //     }
+
+  //     validFiles.push(file);
+  //   }
+
+  //   if (!validFiles.length) {
+  //     alert("No valid files were chosen");
+  //     return;
+  //   }
+
+  //   upLoadAllImage(validFiles, setPreviewUrls);
+  // };
+  // console.log("img", previewUrls);
 
   const [form] = Form.useForm();
   const onOk = () => {
@@ -191,7 +173,7 @@ const CollectionCreateForm = ({ open, onCreate, onCancel }) => {
   return (
     <Modal
       open={open}
-      title="Create a new Book"
+      title="Create a new Physical book - Ebook"
       okText="Create"
       cancelText="Cancel"
       onCancel={onCancel}
@@ -326,7 +308,7 @@ const CollectionCreateForm = ({ open, onCreate, onCancel }) => {
             { min: 1 },
           ]}
           valuePropName="fileList">
-          {/* <Upload beforeUpload={() => false} listType="picture-card" fileList={fileList}
+          <Upload beforeUpload={() => false} listType="picture-card" fileList={fileList}
           onChange={handleUpload}>
             <div>
               <PlusOutlined />
@@ -338,14 +320,14 @@ const CollectionCreateForm = ({ open, onCreate, onCancel }) => {
                 Images
               </div>
             </div>
-          </Upload> */}
-          <input
+          </Upload>
+          {/* <input
             className="block w-0 h-0"
             type="file"
             onChange={onFilesUploadChange}
             multiple
             hidden
-          />
+          /> */}
         </Form.Item>
 
         <Form.Item
@@ -394,12 +376,32 @@ const CollectionCreateForm = ({ open, onCreate, onCancel }) => {
             
           />
         </Form.Item>
+        {/* <Form.Item
+          name="title"
+          label="Title"
+          rules={[
+            {
+              required: true,
+              message: 'Please input the title of collection!',
+            },
+          ]}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item name="description" label="Description">
+          <Input type="textarea" />
+        </Form.Item>
+        <Form.Item name="modifier" className="collection-create-form_last-form-item">
+          <Radio.Group>
+            <Radio value="public">Public</Radio>
+            <Radio value="private">Private</Radio>
+          </Radio.Group>
+        </Form.Item> */}
       </Form>
     </Modal>
   );
 };
-
-export default function BookPage() {
+export default function PhysicalAndEbookPage() {
   const [open, setOpen] = useState(null);
 
   const [page, setPage] = useState(0);
@@ -420,44 +422,14 @@ export default function BookPage() {
  
   const [error, setError] = useState(null);
 
-  const APIUrl = "https://localhost:44301/api/books/admin/physical-books";
-
+  const APIUrl = "https://localhost:44301/api/books/admin/physical-books-and-ebook?";
   //modal create button
   const [openModal, setOpenModal] = useState(false);
 
-  const onCreate = (values, listUrls) => {
+  const onCreate = (values) => {
     console.log('Received values of form: ', values);
-    // let addData = {name: values.name, isbn: values.isbn, author: values.author, releaseYear: values.releaseYear, version: values.version, price: values.price, description: values.description, amount: values.amount, categoryId: values.categoryName, publisherId: values.publisherName};
-    // const requestOptions = {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify(addData)
-    // };
-    // fetch('https://localhost:44301/api/books/book', requestOptions)
-    //   .then(response => response.json())
-    //   .then(data =>
-    //     console.log(listUrls)
-      //   listUrls.map((url) => {
-      //   let requestImageData = {
-      //     imgPath: url,
-      //     requestSellSecondHandId: data.data,
-      //   };
-      //   console.log(requestImageData);
-  
-      //   return fetch(
-      //     "https://localhost:44301/api/book-images/book-image",
-      //     {
-      //       method: "POST",
-      //       body: JSON.stringify(requestImageData),
-      //       headers: { "Content-Type": "application/json" },
-      //     }
-      //   );
-      // })
-      // )
-      // .catch(error => console.error(error));
     setOpenModal(false);
   };
-
   useEffect(() => {
     fetch(APIUrl+"?page=1&pageSize=25")
       .then((response) => {
@@ -544,7 +516,7 @@ export default function BookPage() {
   return (
     <>
       <Helmet>
-        <title> Book | Minimal UI </title>
+        <title> Physical And Ebook Page | Minimal UI </title>
       </Helmet>
 
         {loading && <div>A moment please...</div>}
@@ -552,10 +524,10 @@ export default function BookPage() {
         <div>{`There is a problem fetching the post data - ${error}`}</div>
         )}
 
-      <Container>
+        <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Book
+          Physical And Ebook
           </Typography>
           <Button
             variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}

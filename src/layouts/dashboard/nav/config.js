@@ -42,6 +42,11 @@ const navConfig = [
     icon: icon('ic_ebook'),
   },
   {
+    title: 'physical and ebook',
+    path: '/dashboard/physical-ebook',
+    icon: icon('ic_ebook'),
+  },
+  {
     title: 'publisher',
     path: '/dashboard/publisher',
     icon: icon('ic_publisher'),
