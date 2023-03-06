@@ -311,7 +311,7 @@ export default function AddEBookToComboPage() {
     <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Add Physical Book To Combo
+            Add EBook To Combo
           </Typography>
         </Stack>
 
