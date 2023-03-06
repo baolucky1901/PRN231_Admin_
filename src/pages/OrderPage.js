@@ -2,6 +2,7 @@ import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
 import { sentenceCase } from 'change-case';
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 // @antd
 import { Form,
   Input,
@@ -44,18 +45,13 @@ import Scrollbar from '../components/scrollbar';
 import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
 // mock
 import USERLIST from '../_mock/user';
+import { Link } from 'react-router-dom';
 
 // ----------------------------------------------------------------------
 const { TextArea } = Input;
 
 
 const TABLE_HEAD = [
-  // { id: 'name', label: 'Name', alignRight: false },
-  // { id: 'company', label: 'Company', alignRight: false },
-  // { id: 'role', label: 'Role', alignRight: false },
-  // { id: 'isVerified', label: 'Verified', alignRight: false },
-  // { id: 'status', label: 'Status', alignRight: false },
-  // { id: '' },
   { id: 'id', label: 'Id', alignRight: false },
   { id: 'customerName', label: 'Customer Name', alignRight: false },
   { id: 'totalPrice', label: 'Total Bill', alignRight: false },
@@ -64,10 +60,7 @@ const TABLE_HEAD = [
   { id: 'paymentMethod', label: 'Payment method', alignRight: false },
   { id: 'orderStatus', label: 'Status', alignRight: false },
   { id: '' },
-  // { id: 'userId', label: 'User Id', alignRight: false },
-  // { id: 'id', label: 'Id', alignRight: false },
-  // { id: 'title', label: 'Title', alignRight: false },
-  // { id: 'body', label: 'Body', alignRight: false },
+  { id: '' },
 ];
 
 // ----------------------------------------------------------------------
@@ -101,95 +94,6 @@ function applySortFilter(array, comparator, query) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-// const CollectionCreateForm = ({ open, onCreate, onCancel }) => {
-//   const [form] = Form.useForm();
-//   const onOk = () => {
-//     form.submit();
-//   };
-//   return (
-//     <Modal
-//       open={open}
-//       title="Create a new Order"
-//       okText="Create"
-//       cancelText="Cancel"
-//       onCancel={onCancel}
-//       onOk={() => {
-//         form
-//           .validateFields()
-//           .then((values) => {
-//             form.resetFields();
-//             onCreate(values);
-//           })
-//           .catch((info) => {
-//             console.log('Validate Failed:', info);
-//           });
-//       }}
-//     >
-//       <Form
-//         form={form}
-//         autoComplete="off"
-//         layout="vertical"
-//         name="form_in_modal"
-//         // initialValues={{
-//         //   modifier: 'public',
-//         // }}
-//       >
-//         <Form.Item
-//             name="name"
-//             label="Name"
-//             rules={[
-//               {
-//                 required: true,
-//                 message: "Please enter your name",
-//               },
-//               { whitespace: true },
-//               { min: 3 },
-//             ]}
-//             hasFeedback
-//           >
-//             <Input placeholder="Type your name" />
-//           </Form.Item>
-
-//         <Form.Item  
-//             name="description" 
-//             label="Description"
-//             rules={[
-//               { whitespace: true },
-//             ]}
-//             requiredMark="optional"
-//         >
-//           <TextArea 
-//             placeholder="Type something" 
-//             rows={4} 
-//             showCount 
-//             maxLength={500}  
-//           />
-//         </Form.Item>
-//         {/* <Form.Item
-//           name="title"
-//           label="Title"
-//           rules={[
-//             {
-//               required: true,
-//               message: 'Please input the title of collection!',
-//             },
-//           ]}
-//         >
-//           <Input />
-//         </Form.Item>
-//         <Form.Item name="description" label="Description">
-//           <Input type="textarea" />
-//         </Form.Item>
-//         <Form.Item name="modifier" className="collection-create-form_last-form-item">
-//           <Radio.Group>
-//             <Radio value="public">Public</Radio>
-//             <Radio value="private">Private</Radio>
-//           </Radio.Group>
-//         </Form.Item> */}
-//       </Form>
-//     </Modal>
-//   );
-// };
 
 export default function OrderPage() {
   const [open, setOpen] = useState(null);
@@ -247,6 +151,7 @@ export default function OrderPage() {
   }, [data]);
 
   const handleOpenMenu = (event) => {
+    console.log(event.currentTarget);
     setOpen(event.currentTarget);
   };
 
@@ -321,25 +226,6 @@ export default function OrderPage() {
           <Typography variant="h4" gutterBottom>
             Order
           </Typography>
-          {/* <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
-            New Category
-          </Button> */}
-          {/* <Button
-            variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}
-            type="primary"
-            onClick={() => {
-              setOpenModal(true);
-            }}
-          >
-            New Category
-          </Button> */}
-          {/* <CollectionCreateForm
-            open={openModal}
-            onCreate={onCreate}
-            onCancel={() => {
-              setOpenModal(false);
-            }}
-          /> */}
         </Stack>
 
         <Card>
@@ -431,11 +317,39 @@ export default function OrderPage() {
                           </Stack>
                         </TableCell>
 
-                        <TableCell align="right">
+                        {/* <TableCell align="right">
                           <IconButton size="large" color="inherit" onClick={handleOpenMenu}>
                             <Iconify icon={'eva:more-vertical-fill'} />
                           </IconButton>
-                        </TableCell>
+                        </TableCell> */}
+                        {row.orderStatus === "In_Progress"? <TableCell align='right'>
+                          
+                          {row.paymentMethod === "Thanh toán online"?
+                            <Button href={`order/accepted-online/${row.id}`}>
+                              Accepted
+                            </Button>: row.paymentMethod === "Thanh toán khi nhận hàng"?
+                            <Button href={`order/accepted/${row.id}`}>
+                              Accepted
+                            </Button>: <></>
+                          }
+                          
+                        </TableCell>: <></>}
+                        {row.orderStatus === "Accepted"?
+                        <TableCell align='right'>
+                          <Button href={`order/paid/${row.id}`}>Paid</Button>
+                        </TableCell>:<></>
+                        }
+                        {row.orderStatus === "Paid" || row.orderStatus === "Ebook_delivered"?
+                        <TableCell align='right'>
+                          <Button href={`order/done/${row.id}`}>Done</Button>
+                        </TableCell>:<></>
+                        }
+                        {row.orderStatus === "In_Progress"?
+                        <TableCell align='right'>
+                          <Button href={`order/cancel/${row.id}`}>Cancel</Button>
+                        </TableCell>:<></>
+                        }
+                        
                       </TableRow>
                     );
                   })}
@@ -485,7 +399,7 @@ export default function OrderPage() {
         </Card>
       </Container>
 
-      <Popover
+      {/* <Popover
         open={Boolean(open)}
         anchorEl={open}
         onClose={handleCloseMenu}
@@ -502,7 +416,7 @@ export default function OrderPage() {
             },
           },
         }}
-      >
+      > */}
         {/* <MenuItem>
           <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
           Edit
@@ -512,7 +426,7 @@ export default function OrderPage() {
           <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }} />
           Delete
         </MenuItem> */}
-        <MenuItem>
+        {/* <MenuItem>
           Accepted
         </MenuItem>
         <MenuItem>
@@ -523,8 +437,8 @@ export default function OrderPage() {
         </MenuItem>
         <MenuItem>
           Cancel
-        </MenuItem>
-      </Popover>
+        </MenuItem> */}
+      {/* </Popover> */}
     </>
   );
 }

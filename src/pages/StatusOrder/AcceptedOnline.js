@@ -1,16 +1,19 @@
+import React from 'react'
+import { useNavigate, useParams } from 'react-router-dom' 
 import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
-import { useState, useEffect  } from 'react';
-// @antd
-
+import { sentenceCase } from 'change-case';
+import { useState, useEffect } from 'react';
 // @mui
 import {
   Card,
   Table,
   Stack,
   Paper,
+  Avatar,
   Button,
   Popover,
+  // Checkbox,
   TableRow,
   MenuItem,
   TableBody,
@@ -22,25 +25,20 @@ import {
   TablePagination,
 } from '@mui/material';
 // components
-import Label from '../components/label';
-import Iconify from '../components/iconify';
-import Scrollbar from '../components/scrollbar';
+import Label from '../../components/label';
+import Iconify from '../../components/iconify';
+import Scrollbar from '../../components/scrollbar';
 // sections
-import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
+import { UserListHead, UserListToolbar } from '../../sections/@dashboard/user';
+import { fontWeight } from '@mui/system';
+// mock
 
-// ----------------------------------------------------------------------
 const TABLE_HEAD = [
   { id: 'id', label: 'Id', alignRight: false },
   { id: 'name', label: 'Name', alignRight: false },
-  { id: 'price', label: 'Price', alignRight: true },
-  { id: 'amount', label: 'Amount', alignRight: true },
-  { id: 'amountSold', label: 'AmountSold', alignRight: true },
-  { id: 'author', label: 'Author', alignRight: false },
-  { id: 'categoryName', label: 'Category', alignRight: false },
-  { id: 'publisherName', label: 'Publisher', alignRight: false },
-  { id: 'isActive', label: 'Active', alignRight: false },
+  { id: 'quantity', label: 'Quantity', alignRight: false },
+  { id: 'price', label: 'Price', alignRight: false },
   { id: '' },
-
 ];
 
 // ----------------------------------------------------------------------
@@ -74,7 +72,10 @@ function applySortFilter(array, comparator, query) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-export default function BookPage() {
+export default function AcceptedOnlinePage() {
+  const {orderId} = useParams();
+  const ordId = parseInt(orderId);
+    // console.log(ordId);
   const [open, setOpen] = useState(null);
 
   const [page, setPage] = useState(0);
@@ -90,38 +91,36 @@ export default function BookPage() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const [data, setData] = useState([{"data" : []}]);
+  const [dataOrder, setDataOrder] = useState([{"data": {}}])
 
   const [loading, setLoading] = useState(true);
  
   const [error, setError] = useState(null);
 
-  const APIUrl = "https://localhost:44301/api/books/admin/physical-books";
-
+  const APIUrl = "https://localhost:44301/api/order-details/";
+  const APIUrlOrder = "https://localhost:44301/api/orders/admin/order/";
 
   useEffect(() => {
-    fetch(APIUrl+"?page=1&pageSize=25")
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(
-            `This is an HTTP error: The status is ${response.status}`
-          );
-        }
-        return response.json();
-      })
-      .then((responsedata) => {
-        setData(responsedata.data); 
-        // console.log("Check fetch data", responsedata.data)
-      })
-      .catch((err) => {
-        setError(err.message);
-        setData(null);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-      
-  }, []);
+    
+    const fetchDataOrderDetail = async () => {
+      const res = await fetch(
+        APIUrl + ordId
+      );
+      const data = await res.json();
+      setData(data.data);
+    };
+    fetchDataOrderDetail();
 
+    const fetchDataOrder = async () => {
+      const res = await fetch(
+        APIUrlOrder + ordId
+      );
+      const data = await res.json();
+      setDataOrder(data.data);
+    }
+    fetchDataOrder();
+  }, []);
+  console.log(data);
   const handleOpenMenu = (event) => {
     setOpen(event.currentTarget);
   };
@@ -145,20 +144,20 @@ export default function BookPage() {
     setSelected([]);
   };
 
-  // const handleClick = (event, name) => {
-  //   const selectedIndex = selected.indexOf(name);
-  //   let newSelected = [];
-  //   if (selectedIndex === -1) {
-  //     newSelected = newSelected.concat(selected, name);
-  //   } else if (selectedIndex === 0) {
-  //     newSelected = newSelected.concat(selected.slice(1));
-  //   } else if (selectedIndex === selected.length - 1) {
-  //     newSelected = newSelected.concat(selected.slice(0, -1));
-  //   } else if (selectedIndex > 0) {
-  //     newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
-  //   }
-  //   setSelected(newSelected);
-  // };
+  const handleClick = (event, name) => {
+    const selectedIndex = selected.indexOf(name);
+    let newSelected = [];
+    if (selectedIndex === -1) {
+      newSelected = newSelected.concat(selected, name);
+    } else if (selectedIndex === 0) {
+      newSelected = newSelected.concat(selected.slice(1));
+    } else if (selectedIndex === selected.length - 1) {
+      newSelected = newSelected.concat(selected.slice(0, -1));
+    } else if (selectedIndex > 0) {
+      newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
+    }
+    setSelected(newSelected);
+  };
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -181,10 +180,24 @@ export default function BookPage() {
 
   const isNotFound = !filteredUsers.length && !!filterName;
 
+  const navigate = useNavigate();
+  const handleChangeStatusToAccepted = async () => {
+    const response = await fetch('https://localhost:44301/api/orders/order/order-status/accepted-online-payment?orderId='+ordId, {
+      method: 'PUT',
+      body: JSON.stringify({ /* data to be sent in the request body */ }),
+      // headers: { 'Content-Type': 'application/json' }
+    })
+    navigate('/dashboard/order');
+  }
+
+  const handleReturnToListOrder = async () => {
+    navigate('/dashboard/order');
+  }
+
   return (
     <>
       <Helmet>
-        <title> Book | Minimal UI </title>
+        <title> Order Detail | Minimal UI </title>
       </Helmet>
 
         {loading && <div>A moment please...</div>}
@@ -195,26 +208,13 @@ export default function BookPage() {
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Book
+            Order Detail
           </Typography>
-          <Button href="new-book"
-            variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}
-            type="primary"
-            // onClick={() => {
-            //   setOpenModal(true);
-            // }}
-          >
-            New Book
-          </Button>
-          {/* <CollectionCreateForm
-            open={openModal}
-            onCreate={onCreate}
-            onCancel={() => {
-              setOpenModal(false);
-            }}
-            previewUrls={previewUrls}
-            setPreviewUrls={setPreviewUrls}
-          /> */}
+        </Stack>
+        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
+          <Typography variant="h4" gutterBottom>
+            Do you want to accept the order?
+          </Typography>
         </Stack>
 
         <Card>
@@ -234,72 +234,49 @@ export default function BookPage() {
                 />
                 <TableBody>
                   {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { id, name, isbn, author, price, amount, amountSold, categoryName, publisherName,isActive } = row;
-                    const selectedUser = selected.indexOf(id) !== -1;
+                    // const { id, name, email, imgPath, isActive } = row;
+                    const selectedUser = selected.indexOf(row.id) !== -1;
 
                     return (
-                      <TableRow hover key={id} tabIndex={-1} role="checkbox" selected={selectedUser}>
+                      <TableRow hover key={row.id} tabIndex={-1} role="checkbox" selected={selectedUser}>
                         {/* <TableCell padding="checkbox">
                           <Checkbox checked={selectedUser} onChange={(event) => handleClick(event, id)} />
                         </TableCell> */}
 
-                        <TableCell align="left">{id}</TableCell>
+                        <TableCell align="left">{row.id}</TableCell>
 
                         <TableCell component="th" scope="row" padding="none">
-                          <Stack direction="column" alignItems="start" padding={2} spacing={2}>
-                            
+                          <Stack direction="row" alignItems="center" spacing={2}>
+                            {row.ebookId != null ? 
                             <Typography variant="subtitle2" noWrap>
-                              {name}
-                            </Typography>
-                            ISBN: {isbn}
-                          </Stack>
-                        </TableCell>
-
-                        <TableCell align="right">{price}</TableCell>
-
-                        <TableCell align="right">{amount}</TableCell>
-
-                        <TableCell align="right">{amountSold}</TableCell>
-
-                        <TableCell component="th" scope="row" padding="none">
-                          <Stack direction="row" alignItems="start" minWidth={2} padding={2} spacing={2}>
+                              {row.eBookName} <Label color={('error')}>Ebook</Label>
+                            </Typography> : row.bookId != null ? 
                             <Typography variant="subtitle2" noWrap>
-                              {author}
-                            </Typography>
+                              {row.bookName} <Label color={('success')}>Physical Book</Label>
+                            </Typography> : row.comboBookId != null ?
+                            <Typography variant="subtitle2" noWrap>
+                            {row.comboBookName} <Label color={('warning')}>Combo Book</Label>
+                          </Typography> : <></>}
                           </Stack>
                         </TableCell>
 
-                        <TableCell component="th" scope="row" padding="none">
-                          <Stack direction="row" alignItems="center" padding={2} spacing={2}>
-                            <Typography noWrap>
-                              {categoryName}
-                            </Typography>
-                          </Stack>
-                        </TableCell>
-
-                        <TableCell component="th" scope="row" padding="none">
-                          <Stack direction="row" alignItems="center" padding={2} spacing={2}>
-                            <Typography noWrap>
-                              {publisherName}
-                            </Typography>
-                          </Stack>
-                        </TableCell>
+                        <TableCell align="left">{row.quantity}</TableCell>
 
                         <TableCell align="left">
-                          {isActive === true ? <Label color={('success')}>Active</Label> : <Label color={('error')}>Inactive</Label>}
+                          {/* {isActive === true ? <Label color={('success')}>Active</Label> : <Label color={('error')}>Inactive</Label>} */}
+                          {row.priceBook != null ? 
+                          <Typography variant="subtitle2" noWrap>
+                            {row.quantity * row.priceBook}
+                          </Typography> : row.priceEBook != null ?
+                          <Typography variant="subtitle2" noWrap>
+                            {row.quantity * row.priceEBook}
+                          </Typography> : row.priceCombo != null ?
+                          <Typography variant="subtitle2" noWrap>
+                            {row.quantity * row.priceCombo}
+                          </Typography> : <></>
+                          }   
                         </TableCell>
 
-                        {/* <TableCell align="left">{isVerified ? 'Yes' : 'No'}</TableCell>
-
-                        <TableCell align="left">
-                          <Label color={(status === 'banned' && 'error') || 'success'}>{sentenceCase(status)}</Label>
-                        </TableCell> */}
-
-                        <TableCell align="right">
-                          <IconButton size="large" color="inherit" onClick={handleOpenMenu}>
-                            <Iconify icon={'eva:more-vertical-fill'} />
-                          </IconButton>
-                        </TableCell>
                       </TableRow>
                     );
                   })}
@@ -333,6 +310,20 @@ export default function BookPage() {
                     </TableRow>
                   </TableBody>
                 )}
+                <TableBody>
+                  <TableRow>
+                    <TableCell align="center" style={{fontWeight: 'bold'}}>Total Bill: </TableCell>
+                    <TableCell align="left" style={{fontWeight: 'bold'}}>{dataOrder.totalPrice}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>
+                      <Button onClick={handleChangeStatusToAccepted}>Accepted</Button>
+                    </TableCell>
+                    <TableCell>
+                      <Button onClick={handleReturnToListOrder}>Return</Button>
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
               </Table>
             </TableContainer>
           </Scrollbar>
@@ -349,34 +340,7 @@ export default function BookPage() {
         </Card>
       </Container>
 
-      <Popover
-        open={Boolean(open)}
-        anchorEl={open}
-        onClose={handleCloseMenu}
-        anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
-        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-        PaperProps={{
-          sx: {
-            p: 1,
-            width: 140,
-            '& .MuiMenuItem-root': {
-              px: 1,
-              typography: 'body2',
-              borderRadius: 0.75,
-            },
-          },
-        }}
-      >
-        <MenuItem>
-          <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
-          Edit
-        </MenuItem>
-
-        <MenuItem sx={{ color: 'error.main' }}>
-          <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }} />
-          Delete
-        </MenuItem>
-      </Popover>
     </>
-  );
+  )
 }
+ 

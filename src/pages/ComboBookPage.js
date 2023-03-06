@@ -89,6 +89,8 @@ function applySortFilter(array, comparator, query) {
 
 const CollectionCreateForm = ({ open, onCreate, onCancel }) => {
     const [form] = Form.useForm();
+
+
     const onOk = () => {
       form.submit();
     };
@@ -138,14 +140,14 @@ const CollectionCreateForm = ({ open, onCreate, onCancel }) => {
 
             <Form.Item label="PriceReduction">
               <Form.Item 
-                name="input-priceReduction"
+                name="priceReduction"
                 rules={[{ 
                   required: true, 
                   message: 'Please type your price number' 
                 }]} 
                 noStyle
                 >
-                <InputNumber min={0} />
+                <InputNumber min={0}/>
               </Form.Item>
             </Form.Item>
   
@@ -162,6 +164,7 @@ const CollectionCreateForm = ({ open, onCreate, onCancel }) => {
               rows={4} 
               showCount 
               maxLength={500}  
+              
             />
           </Form.Item>
           {/* <Form.Item
@@ -218,6 +221,16 @@ export default function ComboBookPage() {
 
   const onCreate = (values) => {
     console.log('Received values of form: ', values);
+    let addData = {name: values.name, priceReduction: values.priceReduction, description: values.description};
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(addData)
+    };
+    fetch('https://localhost:44301/api/combobooks/admin/combobook', requestOptions)
+      .then(response => response.json())
+      .then(data => console.log(data))
+      .catch(error => console.error(error));
     setOpenModal(false);
   };
 
@@ -243,7 +256,7 @@ export default function ComboBookPage() {
         setLoading(false);
       });
       
-  }, []);
+  }, [data]);
 
   const handleOpenMenu = (event) => {
     setOpen(event.currentTarget);
@@ -391,6 +404,17 @@ export default function ComboBookPage() {
                         <TableCell align="left">
                           {isActive === true ? <Label color={('success')}>Active</Label> : <Label color={('error')}>Inactive</Label>}
                         </TableCell>
+                        <TableCell align='center'>
+                          <Button href={`combobook/add-physicalbook-to-combo/${row.id}`}>
+                            Add PhysicalBook To Combo
+                          </Button>
+                        </TableCell>
+                        <TableCell align='center'>
+                          <Button href={`combobook/add-ebook-to-combo/${row.id}`}>
+                            Add EBook To Combo
+                          </Button>
+                        </TableCell>
+
 
                         <TableCell align="right">
                           <IconButton size="large" color="inherit" onClick={handleOpenMenu}>
