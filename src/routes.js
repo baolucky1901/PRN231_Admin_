@@ -17,6 +17,8 @@ import EBookPage from './pages/EBookPage';
 import PublisherPage from './pages/PublisherPage';
 import ComboBookPage from './pages/ComboBookPage';
 import ListBookPage from './pages/ListBookPage';
+import NewBook from './pages/BookPage/NewBook';
+import NewEBook from './pages/E-Book/NewEBook';
 import PhysicalAndEbookPage from './pages/PhysicalAndEbookPage';
 import Accepted from './pages/StatusOrder/Accepted';
 import AcceptedOnlinePage from './pages/StatusOrder/AcceptedOnline';
@@ -60,6 +62,8 @@ export default function Router() {
         {path: 'combobook/add-ebook-to-combo/:comboId', element: <AddEBookToComboPage/>},
         { path: 'products', element: <ProductsPage /> },
         { path: 'blog', element: <BlogPage /> },
+        { path: 'new-book', element: <NewBook /> },
+        { path: 'new-e-book', element: <NewEBook /> },
       ],
     },
     {
