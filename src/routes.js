@@ -23,6 +23,10 @@ import AcceptedOnlinePage from './pages/StatusOrder/AcceptedOnline';
 import CancelPage from './pages/StatusOrder/Cancel';
 import PaidPage from './pages/StatusOrder/Paid';
 import DonePage from './pages/StatusOrder/Done';
+import AddBookToCombo from './pages/ComboBook/AddBookToCombo';
+import AddBookToComboPage from './pages/ComboBook/AddBookToCombo';
+import AddEBookToCombo from './pages/ComboBook/AddEBookToCombo';
+import AddEBookToComboPage from './pages/ComboBook/AddEBookToCombo';
 
 // ----------------------------------------------------------------------
 
@@ -52,6 +56,8 @@ export default function Router() {
             { element: <Navigate to="/dashboard/combobook" />, index: true },
             { path: 'listbook', element: <ListBookPage /> },
           ] },
+        {path: 'combobook/add-physicalbook-to-combo/:comboId', element: <AddBookToComboPage/>},
+        {path: 'combobook/add-ebook-to-combo/:comboId', element: <AddEBookToComboPage/>},
         { path: 'products', element: <ProductsPage /> },
         { path: 'blog', element: <BlogPage /> },
       ],
