@@ -7,6 +7,7 @@ import ThemeProvider from './theme';
 // components
 import { StyledChart } from './components/chart';
 import ScrollToTop from './components/scroll-to-top';
+import { ToastContainer } from 'react-toastify';
 
 // ----------------------------------------------------------------------
 
@@ -18,6 +19,7 @@ export default function App() {
           <ScrollToTop />
           <StyledChart />
           <Router />
+          <ToastContainer />
         </ThemeProvider>
       </BrowserRouter>
     </HelmetProvider>
