@@ -1,20 +1,15 @@
-import { Helmet } from 'react-helmet-async';
-import { filter } from 'lodash';
-import { sentenceCase } from 'change-case';
-import { useState, useEffect } from 'react';
+import { Helmet } from "react-helmet-async";
+import { filter } from "lodash";
+import { useState, useEffect } from "react";
 // @antd
-import { PlusOutlined } from '@ant-design/icons';
-import { Form, Input, Modal, Radio, InputNumber, Row, Col, Select, Upload } from 'antd';
 // @mui
 import {
   Card,
   Table,
   Stack,
   Paper,
-  Avatar,
   Button,
   Popover,
-  Checkbox,
   TableRow,
   MenuItem,
   TableBody,
@@ -24,41 +19,25 @@ import {
   IconButton,
   TableContainer,
   TablePagination,
-} from '@mui/material';
+} from "@mui/material";
 // components
-import Label from '../components/label';
-import Iconify from '../components/iconify';
-import Scrollbar from '../components/scrollbar';
+import Label from "../components/label";
+import Iconify from "../components/iconify";
+import Scrollbar from "../components/scrollbar";
 // sections
-import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
+import { UserListHead, UserListToolbar } from "../sections/@dashboard/user";
 // mock
-import USERLIST from '../_mock/user';
-
-// ----------------------------------------------------------------------
-
-const { TextArea } = Input;
-const { Option } = Select;
 
 const TABLE_HEAD = [
-  // { id: 'name', label: 'Name', alignRight: false },
-  // { id: 'company', label: 'Company', alignRight: false },
-  // { id: 'role', label: 'Role', alignRight: false },
-  // { id: 'isVerified', label: 'Verified', alignRight: false },
-  // { id: 'status', label: 'Status', alignRight: false },
-  // { id: '' },
-  { id: 'id', label: 'Id', alignRight: false },
-  { id: 'name', label: 'Name', alignRight: false },
-  { id: 'price', label: 'Price', alignRight: true },
-  { id: 'amountSold', label: 'AmountSold', alignRight: true },
-  { id: 'author', label: 'Author', alignRight: false },
-  { id: 'categoryName', label: 'Category', alignRight: false },
-  { id: 'publisherName', label: 'Publisher', alignRight: false },
-  { id: 'isActive', label: 'Active', alignRight: false },
-  { id: '' },
-  // { id: 'userId', label: 'User Id', alignRight: false },
-  // { id: 'id', label: 'Id', alignRight: false },
-  // { id: 'title', label: 'Title', alignRight: false },
-  // { id: 'body', label: 'Body', alignRight: false },
+  { id: "id", label: "Id", alignRight: false },
+  { id: "name", label: "Name", alignRight: false },
+  { id: "price", label: "Price", alignRight: true },
+  { id: "amountSold", label: "AmountSold", alignRight: true },
+  { id: "author", label: "Author", alignRight: false },
+  { id: "categoryName", label: "Category", alignRight: false },
+  { id: "publisherName", label: "Publisher", alignRight: false },
+  { id: "isActive", label: "Active", alignRight: false },
+  { id: "" },
 ];
 
 // ----------------------------------------------------------------------
@@ -74,7 +53,7 @@ function descendingComparator(a, b, orderBy) {
 }
 
 function getComparator(order, orderBy) {
-  return order === 'desc'
+  return order === "desc"
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy);
 }
@@ -87,7 +66,10 @@ function applySortFilter(array, comparator, query) {
     return a[1] - b[1];
   });
   if (query) {
-    return filter(array, (_user) => _user.name.toLowerCase().indexOf(query.toLowerCase()) !== -1);
+    return filter(
+      array,
+      (_user) => _user.name.toLowerCase().indexOf(query.toLowerCase()) !== -1
+    );
   }
   return stabilizedThis.map((el) => el[0]);
 }
@@ -97,20 +79,20 @@ export default function EBookPage() {
 
   const [page, setPage] = useState(0);
 
-  const [order, setOrder] = useState('desc');
+  const [order, setOrder] = useState("desc");
 
   const [selected, setSelected] = useState([]);
 
-  const [orderBy, setOrderBy] = useState('id');
+  const [orderBy, setOrderBy] = useState("id");
 
-  const [filterName, setFilterName] = useState('');
+  const [filterName, setFilterName] = useState("");
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  const [data, setData] = useState([{"data" : []}]);
+  const [data, setData] = useState([{ data: [] }]);
 
   const [loading, setLoading] = useState(true);
- 
+
   const [error, setError] = useState(null);
 
   const APIUrl = "https://localhost:44301/api/ebooks/admin/e-books";
@@ -171,7 +153,7 @@ export default function EBookPage() {
   //           >
   //             <Input placeholder="Type your name" />
   //         </Form.Item>
-  
+
   //         <Form.Item
   //             name="isbn"
   //             label="ISBN"
@@ -179,7 +161,7 @@ export default function EBookPage() {
   //           >
   //             <Input placeholder="Type your ISBN" />
   //         </Form.Item>
-  
+
   //         <Form.Item
   //             name="author"
   //             label="Author"
@@ -195,7 +177,7 @@ export default function EBookPage() {
   //           >
   //             <Input placeholder="Type your author" />
   //         </Form.Item>
-  
+
   //         <Form.Item
   //             name="releaseYear"
   //             label="Release"
@@ -210,16 +192,16 @@ export default function EBookPage() {
   //           >
   //             <Input placeholder="Type your release" />
   //         </Form.Item>
-  
+
   //         <Row gutter={8}>
   //           <Col span={8}>
   //             <Form.Item label="Version">
-  //               <Form.Item 
-  //                 name="input-version" 
-  //                 rules={[{ 
-  //                   required: true, 
-  //                   message: 'Please type your version number' 
-  //                 }]} 
+  //               <Form.Item
+  //                 name="input-version"
+  //                 rules={[{
+  //                   required: true,
+  //                   message: 'Please type your version number'
+  //                 }]}
   //                 noStyle
   //               >
   //                 <InputNumber min={1} max={20} />
@@ -228,12 +210,12 @@ export default function EBookPage() {
   //           </Col>
   //           <Col span={8}>
   //             <Form.Item label="Price">
-  //               <Form.Item 
-  //                 name="input-price" 
-  //                 rules={[{ 
-  //                   required: true, 
-  //                   message: 'Please type your price number' 
-  //                 }]} 
+  //               <Form.Item
+  //                 name="input-price"
+  //                 rules={[{
+  //                   required: true,
+  //                   message: 'Please type your price number'
+  //                 }]}
   //                 noStyle
   //               >
   //                 <InputNumber min={0} />
@@ -242,12 +224,12 @@ export default function EBookPage() {
   //           </Col>
   //           <Col span={8}>
   //             <Form.Item label="AmountSold">
-  //               <Form.Item 
+  //               <Form.Item
   //                 name="input-amountsold"
-  //                 rules={[{ 
-  //                   required: true, 
-  //                   message: 'Please type your amount sold number' 
-  //                 }]} 
+  //                 rules={[{
+  //                   required: true,
+  //                   message: 'Please type your amount sold number'
+  //                 }]}
   //                 noStyle
   //                 >
   //                 <InputNumber min={1} max={3000} />
@@ -256,15 +238,15 @@ export default function EBookPage() {
   //           </Col>
   //         </Row>
 
-  //         <Form.Item 
-  //         label="Upload" 
+  //         <Form.Item
+  //         label="Upload"
   //         rules={[
-  //           { 
-  //           required: true, 
-  //           message: 'Please upload your image', 
+  //           {
+  //           required: true,
+  //           message: 'Please upload your image',
   //           },
   //           { min: 1 },
-  //         ]} 
+  //         ]}
   //         valuePropName="fileList">
   //         <Upload action="/upload.do" listType="picture-card">
   //           <div>
@@ -279,7 +261,7 @@ export default function EBookPage() {
   //           </div>
   //         </Upload>
   //       </Form.Item>
-  
+
   //         <Form.Item
   //           name="categoryName"
   //           label="Category"
@@ -291,7 +273,7 @@ export default function EBookPage() {
   //             <Option value="2">Cartoon</Option>
   //           </Select>
   //         </Form.Item>
-  
+
   //         <Form.Item
   //           name="publisherName"
   //           label="Publisher"
@@ -303,20 +285,20 @@ export default function EBookPage() {
   //             <Option value="2">Conan</Option>
   //           </Select>
   //         </Form.Item>
-  
-  //         <Form.Item  
-  //             name="description" 
+
+  //         <Form.Item
+  //             name="description"
   //             label="Description"
   //             rules={[
   //               { whitespace: true },
   //             ]}
   //             requiredMark="optional"
   //         >
-  //           <TextArea 
-  //             placeholder="Type something" 
-  //             rows={4} 
-  //             showCount 
-  //             maxLength={500}  
+  //           <TextArea
+  //             placeholder="Type something"
+  //             rows={4}
+  //             showCount
+  //             maxLength={500}
   //           />
   //         </Form.Item>
   //         {/* <Form.Item
@@ -346,7 +328,7 @@ export default function EBookPage() {
   // };
 
   useEffect(() => {
-    fetch(APIUrl+"?page=1&pageSize=25")
+    fetch(APIUrl + "?page=1&pageSize=25")
       .then((response) => {
         if (!response.ok) {
           throw new Error(
@@ -356,7 +338,7 @@ export default function EBookPage() {
         return response.json();
       })
       .then((responsedata) => {
-        setData(responsedata.data); 
+        setData(responsedata.data);
         // console.log("Check fetch data", responsedata.data)
       })
       .catch((err) => {
@@ -366,7 +348,6 @@ export default function EBookPage() {
       .finally(() => {
         setLoading(false);
       });
-      
   }, []);
 
   const handleOpenMenu = (event) => {
@@ -378,8 +359,8 @@ export default function EBookPage() {
   };
 
   const handleRequestSort = (event, property) => {
-    const isAsc = orderBy === property && order === 'asc';
-    setOrder(isAsc ? 'desc' : 'asc');
+    const isAsc = orderBy === property && order === "asc";
+    setOrder(isAsc ? "desc" : "asc");
     setOrderBy(property);
   };
 
@@ -391,21 +372,6 @@ export default function EBookPage() {
     }
     setSelected([]);
   };
-
-  // const handleClick = (event, name) => {
-  //   const selectedIndex = selected.indexOf(name);
-  //   let newSelected = [];
-  //   if (selectedIndex === -1) {
-  //     newSelected = newSelected.concat(selected, name);
-  //   } else if (selectedIndex === 0) {
-  //     newSelected = newSelected.concat(selected.slice(1));
-  //   } else if (selectedIndex === selected.length - 1) {
-  //     newSelected = newSelected.concat(selected.slice(0, -1));
-  //   } else if (selectedIndex > 0) {
-  //     newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
-  //   }
-  //   setSelected(newSelected);
-  // };
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -421,10 +387,15 @@ export default function EBookPage() {
     setFilterName(event.target.value);
   };
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - data.length) : 0;
+  const emptyRows =
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - data.length) : 0;
 
-  const filteredUsers = applySortFilter(data, getComparator(order, orderBy), filterName);
-  console.log(filteredUsers)
+  const filteredUsers = applySortFilter(
+    data,
+    getComparator(order, orderBy),
+    filterName
+  );
+  console.log(filteredUsers);
 
   const isNotFound = !filteredUsers.length && !!filterName;
 
@@ -434,37 +405,37 @@ export default function EBookPage() {
         <title> E-Book | Minimal UI </title>
       </Helmet>
 
-        {loading && <div>A moment please...</div>}
-        {error && (
+      {loading && <div>A moment please...</div>}
+      {error && (
         <div>{`There is a problem fetching the post data - ${error}`}</div>
-        )}
+      )}
 
       <Container>
-        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
+        <Stack
+          direction="row"
+          alignItems="center"
+          justifyContent="space-between"
+          mb={5}
+        >
           <Typography variant="h4" gutterBottom>
             E-Book
           </Typography>
           <Button
-            variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}
+            variant="contained"
+            startIcon={<Iconify icon="eva:plus-fill" />}
             type="primary"
-            href='new-e-book'
-            // onClick={() => {
-            //   setOpenModal(true);
-            // }}
+            href="new-e-book"
           >
             New E-Book
           </Button>
-          {/* <CollectionCreateForm
-            open={openModal}
-            onCreate={onCreate}
-            onCancel={() => {
-              setOpenModal(false);
-            }}
-          /> */}
         </Stack>
 
         <Card>
-          <UserListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} />
+          <UserListToolbar
+            numSelected={selected.length}
+            filterName={filterName}
+            onFilterName={handleFilterByName}
+          />
 
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
@@ -479,74 +450,106 @@ export default function EBookPage() {
                   onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
-                  {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { id, name, isbn, author, price, amountSold, categoryName, publisherName,isActive } = row;
-                    const selectedUser = selected.indexOf(id) !== -1;
+                  {filteredUsers
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((row) => {
+                      const {
+                        id,
+                        name,
+                        isbn,
+                        author,
+                        price,
+                        amountSold,
+                        categoryName,
+                        publisherName,
+                        isActive,
+                      } = row;
+                      const selectedUser = selected.indexOf(id) !== -1;
 
-                    return (
-                      <TableRow hover key={id} tabIndex={-1} role="checkbox" selected={selectedUser}>
-                        {/* <TableCell padding="checkbox">
-                          <Checkbox checked={selectedUser} onChange={(event) => handleClick(event, id)} />
-                        </TableCell> */}
+                      return (
+                        <TableRow
+                          hover
+                          key={id}
+                          tabIndex={-1}
+                          role="checkbox"
+                          selected={selectedUser}
+                        >
+                          <TableCell align="left">{id}</TableCell>
 
-                        <TableCell align="left">{id}</TableCell>
+                          <TableCell component="th" scope="row" padding="none">
+                            <Stack
+                              direction="column"
+                              alignItems="start"
+                              padding={2}
+                              spacing={2}
+                            >
+                              <Typography variant="subtitle2" noWrap>
+                                {name}
+                              </Typography>
+                              ISBN: {isbn}
+                            </Stack>
+                          </TableCell>
 
-                        <TableCell component="th" scope="row" padding="none">
-                          <Stack direction="column" alignItems="start" padding={2} spacing={2}>
-                            
-                            <Typography variant="subtitle2" noWrap>
-                              {name}
-                            </Typography>
-                            ISBN: {isbn}
-                          </Stack>
-                        </TableCell>
+                          <TableCell align="right">{price}</TableCell>
 
-                        <TableCell align="right">{price}</TableCell>
+                          <TableCell align="right">{amountSold}</TableCell>
 
-                        <TableCell align="right">{amountSold}</TableCell>
+                          <TableCell component="th" scope="row" padding="none">
+                            <Stack
+                              direction="row"
+                              alignItems="start"
+                              minWidth={2}
+                              padding={2}
+                              spacing={2}
+                            >
+                              <Typography variant="subtitle2" noWrap>
+                                {author}
+                              </Typography>
+                            </Stack>
+                          </TableCell>
 
-                        <TableCell component="th" scope="row" padding="none">
-                          <Stack direction="row" alignItems="start" minWidth={2} padding={2} spacing={2}>
-                            <Typography variant="subtitle2" noWrap>
-                              {author}
-                            </Typography>
-                          </Stack>
-                        </TableCell>
+                          <TableCell component="th" scope="row" padding="none">
+                            <Stack
+                              direction="row"
+                              alignItems="center"
+                              padding={2}
+                              spacing={2}
+                            >
+                              <Typography noWrap>{categoryName}</Typography>
+                            </Stack>
+                          </TableCell>
 
-                        <TableCell component="th" scope="row" padding="none">
-                          <Stack direction="row" alignItems="center" padding={2} spacing={2}>
-                            <Typography noWrap>
-                              {categoryName}
-                            </Typography>
-                          </Stack>
-                        </TableCell>
+                          <TableCell component="th" scope="row" padding="none">
+                            <Stack
+                              direction="row"
+                              alignItems="center"
+                              padding={2}
+                              spacing={2}
+                            >
+                              <Typography noWrap>{publisherName}</Typography>
+                            </Stack>
+                          </TableCell>
 
-                        <TableCell component="th" scope="row" padding="none">
-                          <Stack direction="row" alignItems="center" padding={2} spacing={2}>
-                            <Typography noWrap>
-                              {publisherName}
-                            </Typography>
-                          </Stack>
-                        </TableCell>
+                          <TableCell align="left">
+                            {isActive === true ? (
+                              <Label color={"success"}>Active</Label>
+                            ) : (
+                              <Label color={"error"}>Inactive</Label>
+                            )}
+                          </TableCell>
 
-                        <TableCell align="left">
-                          {isActive === true ? <Label color={('success')}>Active</Label> : <Label color={('error')}>Inactive</Label>}
-                        </TableCell>
-
-                        {/* <TableCell align="left">{isVerified ? 'Yes' : 'No'}</TableCell>
-
-                        <TableCell align="left">
-                          <Label color={(status === 'banned' && 'error') || 'success'}>{sentenceCase(status)}</Label>
-                        </TableCell> */}
-
-                        <TableCell align="right">
-                          <IconButton size="large" color="inherit" onClick={handleOpenMenu}>
-                            <Iconify icon={'eva:more-vertical-fill'} />
-                          </IconButton>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
+                          <TableCell align="right">
+                            <IconButton
+                              size="large"
+                              color="inherit"
+                              onClick={handleOpenMenu}
+                            >
+                              <Iconify icon={"eva:more-vertical-fill"} />
+                            </IconButton>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
                   {emptyRows > 0 && (
                     <TableRow style={{ height: 53 * emptyRows }}>
                       <TableCell colSpan={6} />
@@ -560,7 +563,7 @@ export default function EBookPage() {
                       <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
                         <Paper
                           sx={{
-                            textAlign: 'center',
+                            textAlign: "center",
                           }}
                         >
                           <Typography variant="h6" paragraph>
@@ -570,7 +573,8 @@ export default function EBookPage() {
                           <Typography variant="body2">
                             No results found for &nbsp;
                             <strong>&quot;{filterName}&quot;</strong>.
-                            <br /> Try checking for typos or using complete words.
+                            <br /> Try checking for typos or using complete
+                            words.
                           </Typography>
                         </Paper>
                       </TableCell>
@@ -597,27 +601,27 @@ export default function EBookPage() {
         open={Boolean(open)}
         anchorEl={open}
         onClose={handleCloseMenu}
-        anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
-        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+        anchorOrigin={{ vertical: "top", horizontal: "left" }}
+        transformOrigin={{ vertical: "top", horizontal: "right" }}
         PaperProps={{
           sx: {
             p: 1,
             width: 140,
-            '& .MuiMenuItem-root': {
+            "& .MuiMenuItem-root": {
               px: 1,
-              typography: 'body2',
+              typography: "body2",
               borderRadius: 0.75,
             },
           },
         }}
       >
         <MenuItem>
-          <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
+          <Iconify icon={"eva:edit-fill"} sx={{ mr: 2 }} />
           Edit
         </MenuItem>
 
-        <MenuItem sx={{ color: 'error.main' }}>
-          <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }} />
+        <MenuItem sx={{ color: "error.main" }}>
+          <Iconify icon={"eva:trash-2-outline"} sx={{ mr: 2 }} />
           Delete
         </MenuItem>
       </Popover>

@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 // @antd
 import { Button, Form, Input, InputNumber, Row, Col, Select } from "antd";
-import { upLoadAllImage, uploadPdfFile, uploadPDFAndGetURL } from "../../firebase/firebase";
+import { upLoadAllImage, uploadPDFAndGetURL } from "../../firebase/firebase";
 
 // ====================================================
 
@@ -17,7 +17,6 @@ const NewEBook = () => {
   const [dataPub, SetDataPub] = useState([]);
   const [previewUrls, setPreviewUrls] = useState([]);
   const [pdf, setPdf] = useState();
-  const [pdfUpload, setPdfUpload] = useState(null);
 
   const navigate = useNavigate();
 
@@ -90,7 +89,6 @@ const NewEBook = () => {
   const onFileUploadPdfChange = async (e) => {
     const fileInput = e.target.files[0];
 
-    // uploadPdfFile(fileInput, setPdf);
     uploadPDFAndGetURL(fileInput).then((url) => {
       setPdf(url)
     }).catch((error) => {
@@ -110,7 +108,6 @@ const NewEBook = () => {
   const [version, SetVersion] = useState(0);
   const [price, SetPrice] = useState(0);
   const [description, SetDescription] = useState("");
-  // const [amount, SetAmount] = useState(0);
   const [categoryId, SetCategoryId] = useState("");
   const [publisherId, SetPublisherId] = useState("");
 
@@ -289,28 +286,7 @@ const NewEBook = () => {
               <InputNumber min={0} onChange={handleInputPrice} value={price} />
             </Form.Item>
           </Form.Item>
-        </Col>
-        {/* <Col span={8}>
-          <Form.Item label="Amount">
-            <Form.Item
-              name="amount"
-              rules={[
-                {
-                  required: true,
-                  message: "Please type your amount number",
-                },
-              ]}
-              noStyle
-            >
-              <InputNumber
-                min={1}
-                max={3000}
-                onChange={handleInputAmount}
-                value={amount}
-              />
-            </Form.Item>
-          </Form.Item>
-        </Col> */}
+        </Col>}
       </Row>
 
       <Form.Item
@@ -370,8 +346,6 @@ const NewEBook = () => {
               {option.name}
             </Option>
           ))}
-          {/* <Option value="1">Computer science and algorithms</Option>
-              <Option value="2">Cartoon</Option> */}
         </Select>
       </Form.Item>
 
@@ -391,8 +365,6 @@ const NewEBook = () => {
               {option.name}
             </Option>
           ))}
-          {/* <Option value="1">Bach Khoa Ha Noi</Option>
-              <Option value="2">Conan</Option> */}
         </Select>
       </Form.Item>
 
@@ -409,28 +381,7 @@ const NewEBook = () => {
           maxLength={500}
           onChange={(e) => SetDescription(e.target.value)}
         />
-      </Form.Item>
-      {/* <Form.Item
-            name="title"
-            label="Title"
-            rules={[
-              {
-                required: true,
-                message: 'Please input the title of collection!',
-              },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item name="description" label="Description">
-            <Input type="textarea" />
-          </Form.Item>
-          <Form.Item name="modifier" className="collection-create-form_last-form-item">
-            <Radio.Group>
-              <Radio value="public">Public</Radio>
-              <Radio value="private">Private</Radio>
-            </Radio.Group>
-          </Form.Item> */}
+      </Form.Item>     
       <Button type="primary" htmlType="submit" onClick={handleCreate}>
         Create
       </Button>
