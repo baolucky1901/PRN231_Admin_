@@ -480,7 +480,7 @@ export default function EBookPage() {
                 />
                 <TableBody>
                   {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { id, name, isbn, author, price, amountSold, categoryName, publisherName,isActive } = row;
+                    const { id, name, isbn, author, priceEbook, amountSold, categoryName, publisherName,isActive } = row;
                     const selectedUser = selected.indexOf(id) !== -1;
 
                     return (
@@ -501,7 +501,7 @@ export default function EBookPage() {
                           </Stack>
                         </TableCell>
 
-                        <TableCell align="right">{price}</TableCell>
+                        <TableCell align="right">{priceEbook}</TableCell>
 
                         <TableCell align="right">{amountSold}</TableCell>
 
