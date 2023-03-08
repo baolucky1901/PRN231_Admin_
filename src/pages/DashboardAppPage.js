@@ -5,6 +5,7 @@ import { useTheme } from '@mui/material/styles';
 import { Grid, Container, Typography } from '@mui/material';
 // components
 import Iconify from '../components/iconify';
+
 // sections
 import {
   AppTasks,
@@ -17,11 +18,144 @@ import {
   AppCurrentSubject,
   AppConversionRates,
 } from '../sections/@dashboard/app';
+import { useState, useEffect } from 'react';
 
 // ----------------------------------------------------------------------
 
 export default function DashboardAppPage() {
   const theme = useTheme();
+  const [countOrder, setCountOrder] = useState();
+  const [countAcc, setCountAcc] = useState();
+  const [countOrderInProgress, setCountOrderInProgress] = useState();
+  const [countOrderAccepted, setCountOrderAccepted] = useState();
+  const [countOrderPaid, setCountOrderPaid] = useState();
+  const [countOrderEbookDeli, setCountOrderEbookDeli] = useState();
+  const [countOrderPhysicalDeli, setCountOrderPhysicalDeli] = useState();
+  const [countOrderDone, setCountOrderDone] = useState();
+  const [countOrderCancel, setCountOrderCancel] = useState();
+
+  const APIUrlCountOrder = "https://localhost:44301/api/orders/admin/count";
+  const APIUrlCountAcc = "https://localhost:44301/api/accounts/count";
+  const APIUrlCountOrderInProgress = "https://localhost:44301/api/orders/admin/count-order/in-progress";
+  const APIUrlCountOrderAccepted = "https://localhost:44301/api/orders/admin/count-order/accepted";
+  const APIUrlCountOrderPaid = "https://localhost:44301/api/orders/admin/count-order/paid";
+  const APIUrlCountOrderEBookDeli = "https://localhost:44301/api/orders/admin/count-order/ebook-delivered";
+  const APIUrlCountOrderPhysicalDeli = "https://localhost:44301/api/orders/admin/count-order/physical-delivered";
+  const APIUrlCountOrderDone = "https://localhost:44301/api/orders/admin/count-order/done";
+  const APIUrlCountOrderCancel = "https://localhost:44301/api/orders/admin/count-order/cancel";
+
+  useEffect(() => {
+    fetch(APIUrlCountOrder)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(
+            `This is an HTTP error: The status is ${response.status}`
+          );
+        }
+        return response.json();
+      })
+      .then((responsedata) => {
+        setCountOrder(responsedata.data); 
+      })
+      fetch(APIUrlCountAcc)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(
+            `This is an HTTP error: The status is ${response.status}`
+          );
+        }
+        return response.json();
+      })
+      .then((responsedata) => {
+        setCountAcc(responsedata.data); 
+      })
+      fetch(APIUrlCountOrderDone)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(
+            `This is an HTTP error: The status is ${response.status}`
+          );
+        }
+        return response.json();
+      })
+      .then((responsedata) => {
+        setCountOrderDone(responsedata.data); 
+      })
+      fetch(APIUrlCountOrderCancel)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(
+            `This is an HTTP error: The status is ${response.status}`
+          );
+        }
+        return response.json();
+      })
+      .then((responsedata) => {
+        setCountOrderCancel(responsedata.data); 
+      })
+
+      fetch(APIUrlCountOrderInProgress)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(
+            `This is an HTTP error: The status is ${response.status}`
+          );
+        }
+        return response.json();
+      })
+      .then((responsedata) => {
+        setCountOrderInProgress(responsedata.data); 
+      })
+      fetch(APIUrlCountOrderAccepted)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(
+            `This is an HTTP error: The status is ${response.status}`
+          );
+        }
+        return response.json();
+      })
+      .then((responsedata) => {
+        setCountOrderAccepted(responsedata.data); 
+      })
+      fetch(APIUrlCountOrderPaid)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(
+            `This is an HTTP error: The status is ${response.status}`
+          );
+        }
+        return response.json();
+      })
+      .then((responsedata) => {
+        setCountOrderPaid(responsedata.data); 
+      })
+      fetch(APIUrlCountOrderPhysicalDeli)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(
+            `This is an HTTP error: The status is ${response.status}`
+          );
+        }
+        return response.json();
+      })
+      .then((responsedata) => {
+        setCountOrderPhysicalDeli(responsedata.data); 
+      })
+      fetch(APIUrlCountOrderEBookDeli)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(
+            `This is an HTTP error: The status is ${response.status}`
+          );
+        }
+        return response.json();
+      })
+      .then((responsedata) => {
+        setCountOrderEbookDeli(responsedata.data); 
+      })
+      
+  }, [countOrder, countAcc, countOrderDone, countOrderCancel, countOrderInProgress, countOrderAccepted, countOrderPaid, countOrderPhysicalDeli, countOrderEbookDeli]);
 
   return (
     <>
@@ -35,23 +169,24 @@ export default function DashboardAppPage() {
         </Typography>
 
         <Grid container spacing={3}>
+          
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Weekly Sales" total={714000} icon={'ant-design:android-filled'} />
+            <AppWidgetSummary title="Customer Accounts" total={countAcc} color="info" icon={'ant-design:apple-filled'} />
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="New Users" total={1352831} color="info" icon={'ant-design:apple-filled'} />
+            <AppWidgetSummary title="Item Orders" total={countOrder} color="warning" icon={'ant-design:windows-filled'} />
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Item Orders" total={1723315} color="warning" icon={'ant-design:windows-filled'} />
+            <AppWidgetSummary title="Done Orders" total={countOrderDone} icon={'ant-design:android-filled'} />
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Bug Reports" total={234} color="error" icon={'ant-design:bug-filled'} />
+            <AppWidgetSummary title="Cancel Orders" total={countOrderCancel} color="error" icon={'ant-design:bug-filled'} />
           </Grid>
 
-          <Grid item xs={12} md={6} lg={8}>
+          {/* <Grid item xs={12} md={6} lg={8}>
             <AppWebsiteVisits
               title="Website Visits"
               subheader="(+43%) than last year"
@@ -89,16 +224,19 @@ export default function DashboardAppPage() {
                 },
               ]}
             />
-          </Grid>
+          </Grid> */}
 
           <Grid item xs={12} md={6} lg={4}>
             <AppCurrentVisits
               title="Current Visits"
               chartData={[
-                { label: 'America', value: 4344 },
-                { label: 'Asia', value: 5435 },
-                { label: 'Europe', value: 1443 },
-                { label: 'Africa', value: 4443 },
+                { label: 'In_Progress', value: countOrderInProgress },
+                { label: 'Accepted', value: countOrderAccepted },
+                { label: 'Paid', value: countOrderPaid },
+                { label: 'Ebook_delivered', value: countOrderEbookDeli },
+                { label: 'Physical_book_delivered', value: countOrderPhysicalDeli },
+                { label: 'Done', value: countOrderDone },
+                { label: 'Cancel', value: countOrderCancel },
               ]}
               chartColors={[
                 theme.palette.primary.main,
