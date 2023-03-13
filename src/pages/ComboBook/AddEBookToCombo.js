@@ -108,7 +108,7 @@ export default function AddEBookToComboPage() {
  
   const [error, setError] = useState(null);
 
-  const APIUrl = "https://localhost:44301/api/detail-combo-books/admin/books-of-combo/";
+  const APIUrl = "https://localhost:44301/api/detail-combo-books/admin/ebooks-of-combo/";
   const APIEBook = "https://localhost:44301/api/ebooks/admin/e-books?page=1&pageSize=25"
 
   useEffect(() => {
@@ -201,16 +201,16 @@ export default function AddEBookToComboPage() {
     navigate('/dashboard/combobook');
   }
 
-  const handleAddToCombo = (e, bookId) =>{
+  const handleAddToCombo = (e, ebookId) =>{
     e.preventDefault();
-    let addData = {bookId: bookId, comboBookId: comId};
+    let addData = {ebookId: ebookId, comboBookId: comId};
     // console.log("Test", addData);
     const requestOptions = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(addData)
     };
-    fetch('https://localhost:44301/api/detail-combo-books/admin/detail-combo-book', requestOptions)
+    fetch('https://localhost:44301/api/detail-combo-books/admin/detail-combo-ebook', requestOptions)
       .then(response => response.json())
       .then(data => console.log(data))
       .catch(error => console.error(error));
@@ -261,17 +261,17 @@ export default function AddEBookToComboPage() {
               
                                       <TableCell component="th" scope="row" padding="none">
                                         <Stack direction="row" alignItems="center" spacing={2}>
-                                        {row.bookName}
+                                        {row.eBookName}
                                         </Stack>
                                       </TableCell>
                                       <TableCell component="th" scope="row" padding="none">
                                         <Stack direction="row" alignItems="center" spacing={2}>
-                                        {row.bookIsbn}
+                                        {row.eBookIsbn}
                                         </Stack>
                                       </TableCell>
                                       <TableCell component="th" scope="row" padding="none">
                                         <Stack direction="row" alignItems="center" spacing={2}>
-                                        {row.bookAuthor}
+                                        {row.eBookAuthor}
                                         </Stack>
                                       </TableCell>
                                       <TableCell component="th" scope="row" padding="none">
@@ -370,7 +370,7 @@ export default function AddEBookToComboPage() {
                         </TableCell>
 
                         <TableCell>
-                            <Button onClick={(e) => handleAddToCombo(e, row.id)} style={{width: 200}}>Add To Combo</Button>
+                            <Button onClick={(e) => handleAddToCombo(e, row.ebookId)} style={{width: 200}}>Add To Combo</Button>
                         </TableCell>
 
                       </TableRow>
