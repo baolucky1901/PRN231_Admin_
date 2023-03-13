@@ -230,13 +230,13 @@ export default function DashboardAppPage() {
             <AppCurrentVisits
               title="Current Visits"
               chartData={[
-                { label: 'In_Progress', value: countOrderInProgress },
-                { label: 'Accepted', value: countOrderAccepted },
-                { label: 'Paid', value: countOrderPaid },
-                { label: 'Ebook_delivered', value: countOrderEbookDeli },
-                { label: 'Physical_book_delivered', value: countOrderPhysicalDeli },
-                { label: 'Done', value: countOrderDone },
-                { label: 'Cancel', value: countOrderCancel },
+                { label: 'In_Progress', value: countOrderInProgress != null ? countOrderInProgress : 0 },
+                { label: 'Accepted', value: countOrderAccepted != null ? countOrderAccepted : 0},
+                { label: 'Paid', value: countOrderPaid != null ? countOrderPaid : 0},
+                { label: 'Ebook_delivered', value: countOrderEbookDeli != null ? countOrderEbookDeli : 0},
+                { label: 'Physical_book_delivered', value: countOrderPhysicalDeli != null ? countOrderPhysicalDeli : 0 },
+                { label: 'Done', value: countOrderDone != null ? countOrderDone : 0  },
+                { label: 'Cancel', value: countOrderCancel != null ? countOrderCancel : 0},
               ]}
               chartColors={[
                 theme.palette.primary.main,
