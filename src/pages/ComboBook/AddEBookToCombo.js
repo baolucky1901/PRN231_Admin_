@@ -118,10 +118,6 @@ export default function AddEBookToComboPage() {
     fetchDataPhysicalBook();
   }, []);
 
-  const handleOpenMenu = (event) => {
-    setOpen(event.currentTarget);
-  };
-
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
