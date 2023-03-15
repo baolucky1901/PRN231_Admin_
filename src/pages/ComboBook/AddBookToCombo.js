@@ -1,57 +1,48 @@
-import React from 'react'
-import { useNavigate, useParams } from 'react-router-dom' 
-import { Helmet } from 'react-helmet-async';
-import { filter } from 'lodash';
-import { sentenceCase } from 'change-case';
-import { useState, useEffect } from 'react';
+import React from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
+import { filter } from "lodash";
+import { useState, useEffect } from "react";
 // @mui
 import {
   Card,
   Table,
   Stack,
   Paper,
-  Avatar,
   Button,
-  Popover,
-  // Checkbox,
   TableRow,
-  MenuItem,
   TableBody,
   TableCell,
   Container,
   Typography,
-  IconButton,
   TableContainer,
   TablePagination,
-} from '@mui/material';
+} from "@mui/material";
 // components
-import Label from '../../components/label';
-import Iconify from '../../components/iconify';
-import Scrollbar from '../../components/scrollbar';
+import Scrollbar from "../../components/scrollbar";
 // sections
-import { UserListHead, UserListToolbar } from '../../sections/@dashboard/user';
-import { fontWeight } from '@mui/system';
+import { UserListHead, UserListToolbar } from "../../sections/@dashboard/user";
 // mock
 
 const TABLE_HEAD = [
-  { id: 'id', label: 'Id', alignRight: false },
-  { id: 'name', label: 'Name', alignRight: false },
-  { id: 'isbn', label: 'Isbn', alignRight: false },
-  { id: 'author', label: 'Author', alignRight: false },
-  { id: 'categoryName', label: 'Category Name', alignRight: false },
-  { id: 'publisherName', label: 'Publisher Name', alignRight: false },
-  { id: '' },
+  { id: "id", label: "Id", alignRight: false },
+  { id: "name", label: "Name", alignRight: false },
+  { id: "isbn", label: "Isbn", alignRight: false },
+  { id: "author", label: "Author", alignRight: false },
+  { id: "categoryName", label: "Category Name", alignRight: false },
+  { id: "publisherName", label: "Publisher Name", alignRight: false },
+  { id: "" },
 ];
 const TABLE_HEAD_VER_PHYSICAL = [
-    { id: 'id', label: 'Id', alignRight: false },
-    { id: 'name', label: 'Name', alignRight: false },
-    { id: 'price', label: 'Price', alignRight: true },
-    { id: 'amount', label: 'Amount', alignRight: true },
-    { id: 'author', label: 'Author', alignRight: false },
-    { id: 'categoryName', label: 'Category', alignRight: false },
-    { id: 'publisherName', label: 'Publisher', alignRight: false },
-    { id: '' },
-  ];
+  { id: "id", label: "Id", alignRight: false },
+  { id: "name", label: "Name", alignRight: false },
+  { id: "price", label: "Price", alignRight: true },
+  { id: "amount", label: "Amount", alignRight: true },
+  { id: "author", label: "Author", alignRight: false },
+  { id: "categoryName", label: "Category", alignRight: false },
+  { id: "publisherName", label: "Publisher", alignRight: false },
+  { id: "" },
+];
 // ----------------------------------------------------------------------
 
 function descendingComparator(a, b, orderBy) {
@@ -65,7 +56,7 @@ function descendingComparator(a, b, orderBy) {
 }
 
 function getComparator(order, orderBy) {
-  return order === 'desc'
+  return order === "desc"
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy);
 }
@@ -78,100 +69,59 @@ function applySortFilter(array, comparator, query) {
     return a[1] - b[1];
   });
   if (query) {
-    return filter(array, (_user) => _user.name.toLowerCase().indexOf(query.toLowerCase()) !== -1);
+    return filter(
+      array,
+      (_user) => _user.name.toLowerCase().indexOf(query.toLowerCase()) !== -1
+    );
   }
   return stabilizedThis.map((el) => el[0]);
 }
 
 export default function AddBookToComboPage() {
-  const {comboId} = useParams();
+  const { comboId } = useParams();
   const comId = parseInt(comboId);
-  const [open, setOpen] = useState(null);
 
   const [page, setPage] = useState(0);
 
-  const [order, setOrder] = useState('desc');
+  const [order, setOrder] = useState("desc");
 
   const [selected, setSelected] = useState([]);
 
-  const [orderBy, setOrderBy] = useState('id');
+  const [orderBy, setOrderBy] = useState("id");
 
-  const [filterName, setFilterName] = useState('');
+  const [filterName, setFilterName] = useState("");
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  const [dataDetail, setDataDetail] = useState([{"data" : []}]);
+  const [dataDetail, setDataDetail] = useState([{ data: [] }]);
 
-  const [data, setData] = useState([{"data" : []}]);
+  const [data, setData] = useState([{ data: [] }]);
 
-  const [loading, setLoading] = useState(true);
- 
-  const [error, setError] = useState(null);
-
-  const APIUrl = "https://localhost:44301/api/detail-combo-books/admin/books-of-combo/";
-  const APIPhysicalBook = "https://localhost:44301/api/books/admin/physical-books?page=1&pageSize=25"
+  const APIUrl =
+    "https://localhost:44301/api/detail-combo-books/admin/books-of-combo/";
+  const APIPhysicalBook =
+    "https://localhost:44301/api/books/admin/physical-books?page=1&pageSize=25";
 
   useEffect(() => {
-    
     const fetchDataFromCombo = async () => {
-      const res = await fetch(
-        APIUrl + comId + "?page=1&pageSize=25"
-      );
+      const res = await fetch(APIUrl + comId + "?page=1&pageSize=25");
       const data = await res.json();
       console.log(data.data);
       setDataDetail(data.data);
     };
     fetchDataFromCombo();
     const fetchDataPhysicalBook = async () => {
-      const res = await fetch(
-          APIPhysicalBook
-      );
+      const res = await fetch(APIPhysicalBook);
       const data = await res.json();
       setData(data.data);
     };
     fetchDataPhysicalBook();
-    
-
-  }, [dataDetail]);
-  
-
-
-  const handleOpenMenu = (event) => {
-    setOpen(event.currentTarget);
-  };
-
-  const handleCloseMenu = () => {
-    setOpen(null);
-  };
+  }, []);
 
   const handleRequestSort = (event, property) => {
-    const isAsc = orderBy === property && order === 'asc';
-    setOrder(isAsc ? 'desc' : 'asc');
+    const isAsc = orderBy === property && order === "asc";
+    setOrder(isAsc ? "desc" : "asc");
     setOrderBy(property);
-  };
-
-  const handleSelectAllClick = (event) => {
-    if (event.target.checked) {
-      const newSelecteds = data.map((n) => n.name);
-      setSelected(newSelecteds);
-      return;
-    }
-    setSelected([]);
-  };
-
-  const handleClick = (event, name) => {
-    const selectedIndex = selected.indexOf(name);
-    let newSelected = [];
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
-    }
-    setSelected(newSelected);
   };
 
   const handleChangePage = (event, newPage) => {
@@ -188,46 +138,57 @@ export default function AddBookToComboPage() {
     setFilterName(event.target.value);
   };
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - data.length) : 0;
+  const emptyRows =
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - data.length) : 0;
 
-  const filteredUsers = applySortFilter(data, getComparator(order, orderBy), filterName);
-  console.log(filteredUsers)
+  const filteredUsers = applySortFilter(
+    data,
+    getComparator(order, orderBy),
+    filterName
+  );
+  console.log(filteredUsers);
 
   const isNotFound = !filteredUsers.length && !!filterName;
 
   const navigate = useNavigate();
 
   const handleReturnToListCombo = async () => {
-    navigate('/dashboard/combobook');
-  }
+    navigate("/dashboard/combobook");
+  };
 
-  const handleAddToCombo = (e, bookId) =>{
+  const handleAddToCombo = (e, bookId) => {
     e.preventDefault();
-    let addData = {bookId: bookId, comboBookId: comId};
-    // console.log("Test", addData);
+    let addData = { bookId: bookId, comboBookId: comId };
     const requestOptions = {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(addData)
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(addData),
     };
-    fetch('https://localhost:44301/api/detail-combo-books/admin/detail-combo-book', requestOptions)
-      .then(response => response.json())
-      .then(data => console.log(data))
-      .catch(error => console.error(error));
-  }
-  const handleDeleteBookFromCombo = (e, bookId) =>{
+    fetch(
+      "https://localhost:44301/api/detail-combo-books/admin/detail-combo-book",
+      requestOptions
+    )
+      .then((response) => response.json())
+      .then((data) => console.log(data))
+      .catch((error) => console.error(error));
+  };
+  const handleDeleteBookFromCombo = (e, bookId) => {
     e.preventDefault();
     console.log(bookId);
     const requestOptions = {
-      method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({})
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({}),
     };
-    fetch('https://localhost:44301/api/detail-combo-books/detail-combo-book?id='+bookId, requestOptions)
-      .then(response => response.json())
-      .then(data => console.log(data))
-      .catch(error => console.error(error));
-  }
+    fetch(
+      "https://localhost:44301/api/detail-combo-books/detail-combo-book?id=" +
+        bookId,
+      requestOptions
+    )
+      .then((response) => response.json())
+      .then((data) => console.log(data))
+      .catch((error) => console.error(error));
+  };
 
   return (
     <>
@@ -235,64 +196,96 @@ export default function AddBookToComboPage() {
         <title> Combo Detail | Minimal UI </title>
       </Helmet>
 
-
       <Container>
-        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
+        <Stack
+          direction="row"
+          alignItems="center"
+          justifyContent="space-between"
+          mb={5}
+        >
           <Typography variant="h4" gutterBottom>
             ComboBook Detail
           </Typography>
         </Stack>
 
         <Card>
-
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
               <Table>
-                <UserListHead
-                  headLabel={TABLE_HEAD}
-                />
-                {dataDetail.length > 0? 
-                                <TableBody>
-                                {dataDetail.map((row) => {
-                                  return (
-                                    <TableRow hover key={row.id} tabIndex={-1} role="checkbox">
-              
-                                      <TableCell align="left">{row.id}</TableCell>
-              
-                                      <TableCell component="th" scope="row" padding="none">
-                                        <Stack direction="row" alignItems="center" spacing={2}>
-                                        {row.bookName}
-                                        </Stack>
-                                      </TableCell>
-                                      <TableCell component="th" scope="row" padding="none">
-                                        <Stack direction="row" alignItems="center" spacing={2}>
-                                        {row.bookIsbn}
-                                        </Stack>
-                                      </TableCell>
-                                      <TableCell component="th" scope="row" padding="none">
-                                        <Stack direction="row" alignItems="center" spacing={2}>
-                                        {row.bookAuthor}
-                                        </Stack>
-                                      </TableCell>
-                                      <TableCell component="th" scope="row" padding="none">
-                                        <Stack direction="row" alignItems="center" spacing={2}>
-                                        {row.categoryName}
-                                        </Stack>
-                                      </TableCell>
-                                      <TableCell component="th" scope="row" padding="none">
-                                        <Stack direction="row" alignItems="center" spacing={2}>
-                                        {row.publisherName}
-                                        </Stack>
-                                      </TableCell>
-                                      <TableCell>
-                                        <Button onClick={(e) => handleDeleteBookFromCombo(e, row.id)}>Delete</Button>
-                                      </TableCell>
-              
-                                    </TableRow>
-                                  );
-                                })}
-                                
-                              </TableBody> : <></>}
+                <UserListHead headLabel={TABLE_HEAD} />
+                {dataDetail.length > 0 ? (
+                  <TableBody>
+                    {dataDetail.map((row) => {
+                      return (
+                        <TableRow
+                          hover
+                          key={row.id}
+                          tabIndex={-1}
+                          role="checkbox"
+                        >
+                          <TableCell align="left">{row.id}</TableCell>
+
+                          <TableCell component="th" scope="row" padding="none">
+                            <Stack
+                              direction="row"
+                              alignItems="center"
+                              spacing={2}
+                            >
+                              {row.bookName}
+                            </Stack>
+                          </TableCell>
+                          <TableCell component="th" scope="row" padding="none">
+                            <Stack
+                              direction="row"
+                              alignItems="center"
+                              spacing={2}
+                            >
+                              {row.bookIsbn}
+                            </Stack>
+                          </TableCell>
+                          <TableCell component="th" scope="row" padding="none">
+                            <Stack
+                              direction="row"
+                              alignItems="center"
+                              spacing={2}
+                            >
+                              {row.bookAuthor}
+                            </Stack>
+                          </TableCell>
+                          <TableCell component="th" scope="row" padding="none">
+                            <Stack
+                              direction="row"
+                              alignItems="center"
+                              spacing={2}
+                            >
+                              {row.categoryName}
+                            </Stack>
+                          </TableCell>
+                          <TableCell component="th" scope="row" padding="none">
+                            <Stack
+                              direction="row"
+                              alignItems="center"
+                              spacing={2}
+                            >
+                              {row.publisherName}
+                            </Stack>
+                          </TableCell>
+                          <TableCell>
+                            <Button
+                              onClick={(e) =>
+                                handleDeleteBookFromCombo(e, row.id)
+                              }
+                            >
+                              Delete
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  </TableBody>
+                ) : (
+                  <></>
+                )}
 
                 <TableBody>
                   <TableRow>
@@ -304,19 +297,27 @@ export default function AddBookToComboPage() {
               </Table>
             </TableContainer>
           </Scrollbar>
-
         </Card>
       </Container>
 
-    <Container>
-        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
+      <Container>
+        <Stack
+          direction="row"
+          alignItems="center"
+          justifyContent="space-between"
+          mb={5}
+        >
           <Typography variant="h4" gutterBottom>
             Add Physical Book To Combo
           </Typography>
         </Stack>
 
         <Card>
-          <UserListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} />
+          <UserListToolbar
+            numSelected={selected.length}
+            filterName={filterName}
+            onFilterName={handleFilterByName}
+          />
 
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
@@ -331,51 +332,91 @@ export default function AddBookToComboPage() {
                   // onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
-                  {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const selectedUser = selected.indexOf(row.id) !== -1;
-                    return (
-                      <TableRow hover key={row.id} tabIndex={-1} role="checkbox" selected={selectedUser}>
+                  {filteredUsers
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((row) => {
+                      const selectedUser = selected.indexOf(row.id) !== -1;
+                      return (
+                        <TableRow
+                          hover
+                          key={row.id}
+                          tabIndex={-1}
+                          role="checkbox"
+                          selected={selectedUser}
+                        >
+                          <TableCell align="left">{row.id}</TableCell>
 
-                        <TableCell align="left">{row.id}</TableCell>
+                          <TableCell component="th" scope="row" padding="none">
+                            <Stack
+                              direction="row"
+                              alignItems="center"
+                              spacing={2}
+                            >
+                              {row.name}
+                            </Stack>
+                          </TableCell>
+                          <TableCell component="th" scope="row" padding="none">
+                            <Stack
+                              direction="row"
+                              alignItems="center"
+                              spacing={2}
+                            >
+                              {row.price}
+                            </Stack>
+                          </TableCell>
+                          <TableCell
+                            align="center"
+                            component="th"
+                            scope="row"
+                            padding="none"
+                          >
+                            <Stack
+                              direction="row"
+                              alignItems="center"
+                              spacing={2}
+                            >
+                              {row.amount}
+                            </Stack>
+                          </TableCell>
+                          <TableCell component="th" scope="row" padding="none">
+                            <Stack
+                              direction="row"
+                              alignItems="center"
+                              spacing={2}
+                            >
+                              {row.author}
+                            </Stack>
+                          </TableCell>
+                          <TableCell component="th" scope="row" padding="none">
+                            <Stack
+                              direction="row"
+                              alignItems="center"
+                              spacing={2}
+                            >
+                              {row.categoryName}
+                            </Stack>
+                          </TableCell>
+                          <TableCell component="th" scope="row" padding="none">
+                            <Stack
+                              direction="row"
+                              alignItems="center"
+                              spacing={2}
+                            >
+                              {row.publisherName}
+                            </Stack>
+                          </TableCell>
 
-                        <TableCell component="th" scope="row" padding="none">
-                          <Stack direction="row" alignItems="center" spacing={2}>
-                          {row.name}
-                          </Stack>
-                        </TableCell>
-                        <TableCell component="th" scope="row" padding="none">
-                          <Stack direction="row" alignItems="center" spacing={2}>
-                          {row.price}
-                          </Stack>
-                        </TableCell>
-                        <TableCell align='center' component="th" scope="row" padding="none">
-                          <Stack direction="row" alignItems="center" spacing={2}>
-                          {row.amount}
-                          </Stack>
-                        </TableCell>
-                        <TableCell component="th" scope="row" padding="none">
-                          <Stack direction="row" alignItems="center" spacing={2}>
-                          {row.author}
-                          </Stack>
-                        </TableCell>
-                        <TableCell component="th" scope="row" padding="none">
-                          <Stack direction="row" alignItems="center" spacing={2}>
-                          {row.categoryName}
-                          </Stack>
-                        </TableCell>
-                        <TableCell component="th" scope="row" padding="none">
-                          <Stack direction="row" alignItems="center" spacing={2}>
-                          {row.publisherName}
-                          </Stack>
-                        </TableCell>
-
-                        <TableCell>
-                            <Button onClick={(e) => handleAddToCombo(e, row.id)} style={{width: 200}}>Add To Combo</Button>
-                        </TableCell>
-
-                      </TableRow>
-                    );
-                  })}
+                          <TableCell>
+                            <Button
+                              onClick={(e) => handleAddToCombo(e, row.id)}
+                              style={{ width: 200 }}
+                            >
+                              Add To Combo
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
                   {emptyRows > 0 && (
                     <TableRow style={{ height: 53 * emptyRows }}>
                       <TableCell colSpan={6} />
@@ -389,7 +430,7 @@ export default function AddBookToComboPage() {
                       <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
                         <Paper
                           sx={{
-                            textAlign: 'center',
+                            textAlign: "center",
                           }}
                         >
                           <Typography variant="h6" paragraph>
@@ -399,20 +440,14 @@ export default function AddBookToComboPage() {
                           <Typography variant="body2">
                             No results found for &nbsp;
                             <strong>&quot;{filterName}&quot;</strong>.
-                            <br /> Try checking for typos or using complete words.
+                            <br /> Try checking for typos or using complete
+                            words.
                           </Typography>
                         </Paper>
                       </TableCell>
                     </TableRow>
                   </TableBody>
                 )}
-                {/* <TableBody>
-                  <TableRow>
-                    <TableCell>
-                      <Button onClick={handleReturnToListOrder}>Return</Button>
-                    </TableCell>
-                  </TableRow>
-                </TableBody> */}
               </Table>
             </TableContainer>
           </Scrollbar>
@@ -427,9 +462,7 @@ export default function AddBookToComboPage() {
             onRowsPerPageChange={handleChangeRowsPerPage}
           />
         </Card>
-      </Container>     
+      </Container>
     </>
-
   );
 }
- 

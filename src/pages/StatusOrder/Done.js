@@ -2,7 +2,6 @@ import React from 'react'
 import { useNavigate, useParams } from 'react-router-dom' 
 import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
-import { sentenceCase } from 'change-case';
 import { useState, useEffect } from 'react';
 // @mui
 import {
@@ -10,27 +9,20 @@ import {
   Table,
   Stack,
   Paper,
-  Avatar,
   Button,
-  Popover,
-  // Checkbox,
   TableRow,
-  MenuItem,
   TableBody,
   TableCell,
   Container,
   Typography,
-  IconButton,
   TableContainer,
   TablePagination,
 } from '@mui/material';
 // components
 import Label from '../../components/label';
-import Iconify from '../../components/iconify';
 import Scrollbar from '../../components/scrollbar';
 // sections
 import { UserListHead, UserListToolbar } from '../../sections/@dashboard/user';
-import { fontWeight } from '@mui/system';
 // mock
 
 const TABLE_HEAD = [
@@ -75,9 +67,6 @@ function applySortFilter(array, comparator, query) {
 export default function DonePage() {
   const {orderId} = useParams();
   const ordId = parseInt(orderId);
-    // console.log(ordId);
-  const [open, setOpen] = useState(null);
-
   const [page, setPage] = useState(0);
 
   const [order, setOrder] = useState('desc');
@@ -103,31 +92,27 @@ export default function DonePage() {
   useEffect(() => {
     
     const fetchDataOrderDetail = async () => {
+      setLoading(true);
       const res = await fetch(
         APIUrl + ordId
       );
       const data = await res.json();
       setData(data.data);
+      setLoading(false);
     };
     fetchDataOrderDetail();
 
     const fetchDataOrder = async () => {
+      setLoading(true);
       const res = await fetch(
         APIUrlOrder + ordId
       );
       const data = await res.json();
       setDataOrder(data.data);
+      setLoading(false);
     }
     fetchDataOrder();
   }, []);
-  console.log(data);
-  const handleOpenMenu = (event) => {
-    setOpen(event.currentTarget);
-  };
-
-  const handleCloseMenu = () => {
-    setOpen(null);
-  };
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -142,21 +127,6 @@ export default function DonePage() {
       return;
     }
     setSelected([]);
-  };
-
-  const handleClick = (event, name) => {
-    const selectedIndex = selected.indexOf(name);
-    let newSelected = [];
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
-    }
-    setSelected(newSelected);
   };
 
   const handleChangePage = (event, newPage) => {
@@ -234,14 +204,10 @@ export default function DonePage() {
                 />
                 <TableBody>
                   {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    // const { id, name, email, imgPath, isActive } = row;
                     const selectedUser = selected.indexOf(row.id) !== -1;
 
                     return (
                       <TableRow hover key={row.id} tabIndex={-1} role="checkbox" selected={selectedUser}>
-                        {/* <TableCell padding="checkbox">
-                          <Checkbox checked={selectedUser} onChange={(event) => handleClick(event, id)} />
-                        </TableCell> */}
 
                         <TableCell align="left">{row.id}</TableCell>
 
@@ -263,7 +229,6 @@ export default function DonePage() {
                         <TableCell align="left">{row.quantity}</TableCell>
 
                         <TableCell align="left">
-                          {/* {isActive === true ? <Label color={('success')}>Active</Label> : <Label color={('error')}>Inactive</Label>} */}
                           {row.priceBook != null ? 
                           <Typography variant="subtitle2" noWrap>
                             {row.quantity * row.priceBook}

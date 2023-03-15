@@ -1,6 +1,5 @@
 import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
-import { sentenceCase } from 'change-case';
 import { useState, useEffect } from 'react';
 // @mui
 import {
@@ -8,10 +7,7 @@ import {
   Table,
   Stack,
   Paper,
-  Avatar,
-  Button,
   Popover,
-  Checkbox,
   TableRow,
   MenuItem,
   TableBody,
@@ -29,17 +25,10 @@ import Scrollbar from '../components/scrollbar';
 // sections
 import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
 // mock
-import USERLIST from '../_mock/user';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  // { id: 'name', label: 'Name', alignRight: false },
-  // { id: 'company', label: 'Company', alignRight: false },
-  // { id: 'role', label: 'Role', alignRight: false },
-  // { id: 'isVerified', label: 'Verified', alignRight: false },
-  // { id: 'status', label: 'Status', alignRight: false },
-  // { id: '' },
   { id: 'id', label: 'Id', alignRight: false },
   { id: 'name', label: 'Name', alignRight: false },
   { id: 'price', label: 'Price', alignRight: true },
@@ -50,10 +39,6 @@ const TABLE_HEAD = [
   { id: 'publisherName', label: 'Publisher', alignRight: false },
   { id: 'isActive', label: 'Active', alignRight: false },
   { id: '' },
-  // { id: 'userId', label: 'User Id', alignRight: false },
-  // { id: 'id', label: 'Id', alignRight: false },
-  // { id: 'title', label: 'Title', alignRight: false },
-  // { id: 'body', label: 'Body', alignRight: false },
 ];
 
 // ----------------------------------------------------------------------
@@ -120,9 +105,8 @@ export default function ListBookPage() {
         }
         return response.json();
       })
-      .then((responsedata) => {
-        setData(responsedata.data); 
-        // console.log("Check fetch data", responsedata.data)
+      .then((responseData) => {
+        setData(responseData.data); 
       })
       .catch((err) => {
         setError(err.message);
@@ -155,21 +139,6 @@ export default function ListBookPage() {
       return;
     }
     setSelected([]);
-  };
-
-  const handleClick = (event, name) => {
-    const selectedIndex = selected.indexOf(name);
-    let newSelected = [];
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
-    }
-    setSelected(newSelected);
   };
 
   const handleChangePage = (event, newPage) => {
@@ -209,9 +178,6 @@ export default function ListBookPage() {
           <Typography variant="h4" gutterBottom>
           List Book to add Combo Book
           </Typography>
-          {/* <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
-            New Book
-          </Button> */}
         </Stack>
 
         <Card>
@@ -236,10 +202,6 @@ export default function ListBookPage() {
 
                     return (
                       <TableRow hover key={id} tabIndex={-1} role="checkbox" selected={selectedUser}>
-                        {/* <TableCell padding="checkbox">
-                          <Checkbox checked={selectedUser} onChange={(event) => handleClick(event, id)} />
-                        </TableCell> */}
-
                         <TableCell align="left">{id}</TableCell>
 
                         <TableCell component="th" scope="row" padding="none">
@@ -285,12 +247,6 @@ export default function ListBookPage() {
                         <TableCell align="left">
                           {isActive === true ? <Label color={('success')}>Active</Label> : <Label color={('error')}>Inactive</Label>}
                         </TableCell>
-
-                        {/* <TableCell align="left">{isVerified ? 'Yes' : 'No'}</TableCell>
-
-                        <TableCell align="left">
-                          <Label color={(status === 'banned' && 'error') || 'success'}>{sentenceCase(status)}</Label>
-                        </TableCell> */}
 
                         <TableCell align="right">
                           <IconButton size="large" color="inherit" onClick={handleOpenMenu}>

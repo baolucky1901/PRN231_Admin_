@@ -1,54 +1,27 @@
 import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
-import { sentenceCase } from 'change-case';
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-// @antd
-import { Form,
-  Input,
-  // Button,
-  Modal,
-  Radio,
-  Select,
-  Cascader,
-  DatePicker,
-  InputNumber,
-  TreeSelect,
-  Switch,
-  Checkbox,
-  Upload, } from 'antd';
 // @mui
 import {
   Card,
   Table,
   Stack,
   Paper,
-  Avatar,
   Button,
-  Popover,
-  // Checkbox,
   TableRow,
-  MenuItem,
   TableBody,
   TableCell,
   Container,
   Typography,
-  IconButton,
   TableContainer,
   TablePagination,
 } from '@mui/material';
 // components
 import Label from '../components/label';
-import Iconify from '../components/iconify';
 import Scrollbar from '../components/scrollbar';
 // sections
 import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
 // mock
-import USERLIST from '../_mock/user';
-import { Link } from 'react-router-dom';
-
-// ----------------------------------------------------------------------
-const { TextArea } = Input;
 
 
 const TABLE_HEAD = [
@@ -96,7 +69,6 @@ function applySortFilter(array, comparator, query) {
 
 
 export default function OrderPage() {
-  const [open, setOpen] = useState(null);
 
   const [page, setPage] = useState(0);
 
@@ -119,12 +91,6 @@ export default function OrderPage() {
   const APIUrl = "https://localhost:44301/api/orders/admin?";
 
   //modal create button
-  const [openModal, setOpenModal] = useState(false);
-
-  const onCreate = (values) => {
-    console.log('Received values of form: ', values);
-    setOpenModal(false);
-  };
 
   useEffect(() => {
     fetch(APIUrl+"?page=1&pageSize=25")
@@ -148,16 +114,7 @@ export default function OrderPage() {
         setLoading(false);
       });
       
-  }, [data]);
-
-  const handleOpenMenu = (event) => {
-    console.log(event.currentTarget);
-    setOpen(event.currentTarget);
-  };
-
-  const handleCloseMenu = () => {
-    setOpen(null);
-  };
+  }, []);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -172,21 +129,6 @@ export default function OrderPage() {
       return;
     }
     setSelected([]);
-  };
-
-  const handleClick = (event, name) => {
-    const selectedIndex = selected.indexOf(name);
-    let newSelected = [];
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
-    }
-    setSelected(newSelected);
   };
 
   const handleChangePage = (event, newPage) => {
@@ -245,14 +187,10 @@ export default function OrderPage() {
                 />
                 <TableBody>
                   {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    // const { id, name, email, imgPath, isActive } = row;
                     const selectedUser = selected.indexOf(row.id) !== -1;
 
                     return (
                       <TableRow hover key={row.id} tabIndex={-1} role="checkbox" selected={selectedUser}>
-                        {/* <TableCell padding="checkbox">
-                          <Checkbox checked={selectedUser} onChange={(event) => handleClick(event, id)} />
-                        </TableCell> */}
 
                         <TableCell align="left">{row.id}</TableCell>
 
@@ -316,12 +254,6 @@ export default function OrderPage() {
                             </Typography>
                           </Stack>
                         </TableCell>
-
-                        {/* <TableCell align="right">
-                          <IconButton size="large" color="inherit" onClick={handleOpenMenu}>
-                            <Iconify icon={'eva:more-vertical-fill'} />
-                          </IconButton>
-                        </TableCell> */}
                         {row.orderStatus === "In_Progress"? <TableCell align='right'>
                           
                           {row.paymentMethod === "Thanh toán online"?
@@ -398,47 +330,6 @@ export default function OrderPage() {
           />
         </Card>
       </Container>
-
-      {/* <Popover
-        open={Boolean(open)}
-        anchorEl={open}
-        onClose={handleCloseMenu}
-        anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
-        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-        PaperProps={{
-          sx: {
-            p: 1,
-            width: 140,
-            '& .MuiMenuItem-root': {
-              px: 1,
-              typography: 'body2',
-              borderRadius: 0.75,
-            },
-          },
-        }}
-      > */}
-        {/* <MenuItem>
-          <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
-          Edit
-        </MenuItem>
-
-        <MenuItem sx={{ color: 'error.main' }}>
-          <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }} />
-          Delete
-        </MenuItem> */}
-        {/* <MenuItem>
-          Accepted
-        </MenuItem>
-        <MenuItem>
-          Paid
-        </MenuItem>
-        <MenuItem>
-          Done
-        </MenuItem>
-        <MenuItem>
-          Cancel
-        </MenuItem> */}
-      {/* </Popover> */}
     </>
   );
 }

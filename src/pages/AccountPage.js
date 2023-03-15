@@ -1,6 +1,5 @@
 import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
-import { sentenceCase } from 'change-case';
 import { useState, useEffect } from 'react';
 // @mui
 import {
@@ -29,7 +28,6 @@ import Scrollbar from '../components/scrollbar';
 // sections
 import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
 // mock
-import USERLIST from '../_mock/user';
 
 // ----------------------------------------------------------------------
 
@@ -143,21 +141,6 @@ export default function AccountPage() {
     setSelected([]);
   };
 
-  const handleClick = (event, name) => {
-    const selectedIndex = selected.indexOf(name);
-    let newSelected = [];
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
-    }
-    setSelected(newSelected);
-  };
-
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -219,9 +202,6 @@ export default function AccountPage() {
 
                     return (
                       <TableRow hover key={id} tabIndex={-1} role="checkbox" selected={selectedUser}>
-                        {/* <TableCell padding="checkbox">
-                          <Checkbox checked={selectedUser} onChange={(event) => handleClick(event, id)} />
-                        </TableCell> */}
 
                         <TableCell align="left">{id}</TableCell>
 
@@ -239,12 +219,6 @@ export default function AccountPage() {
                         <TableCell align="left">
                           {isActive === true ? <Label color={('success')}>Active</Label> : <Label color={('error')}>Inactive</Label>}
                         </TableCell>
-
-                        {/* <TableCell align="left">{isVerified ? 'Yes' : 'No'}</TableCell>
-
-                        <TableCell align="left">
-                          <Label color={(status === 'banned' && 'error') || 'success'}>{sentenceCase(status)}</Label>
-                        </TableCell> */}
 
                         <TableCell align="right">
                           <IconButton size="large" color="inherit" onClick={handleOpenMenu}>

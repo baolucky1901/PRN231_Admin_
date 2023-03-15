@@ -35,9 +35,8 @@ const NewEBook = () => {
         }
         return response.json();
       })
-      .then((responsedata) => {
-        SetDataCate(responsedata.data);
-        // console.log("Check fetch data", responsedata.data)
+      .then((responseData) => {
+        SetDataCate(responseData.data);
       });
     fetch(APIUrlPublisher + "?page=1&pageSize=25")
       .then((response) => {
@@ -48,9 +47,8 @@ const NewEBook = () => {
         }
         return response.json();
       })
-      .then((responsedata) => {
-        SetDataPub(responsedata.data);
-        // console.log("Check fetch data", responsedata.data)
+      .then((responseData) => {
+        SetDataPub(responseData.data);
       });
   }, []);
 
@@ -91,11 +89,13 @@ const NewEBook = () => {
   const onFileUploadPdfChange = async (e) => {
     const fileInput = e.target.files[0];
 
-    uploadPDFAndGetURL(fileInput).then((url) => {
-      setPdf(url)
-    }).catch((error) => {
-      console.log(error);
-    })
+    uploadPDFAndGetURL(fileInput)
+      .then((url) => {
+        setPdf(url);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
   console.log("PDF Urls: ", pdf);
 
@@ -158,11 +158,14 @@ const NewEBook = () => {
           ebookId: dataRes.data,
         };
         console.log("CreateBookImage: ", createBookImage);
-        return fetch("https://localhost:44301/api/book-images/book-image/ebook", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(createBookImage),
-        });
+        return fetch(
+          "https://localhost:44301/api/book-images/book-image/ebook",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(createBookImage),
+          }
+        );
       });
       const response = await Promise.all(promises);
       if (response != null) {
@@ -306,7 +309,7 @@ const NewEBook = () => {
           className="block w-0 h-0"
           type="file"
           onChange={(e) => onFileUploadPdfChange(e)}
-          accept='.pdf'
+          accept=".pdf"
           hidden
         />
       </Form.Item>
@@ -383,7 +386,7 @@ const NewEBook = () => {
           maxLength={500}
           onChange={(e) => SetDescription(e.target.value)}
         />
-      </Form.Item>     
+      </Form.Item>
       <Button type="primary" htmlType="submit" onClick={handleCreate}>
         Create
       </Button>

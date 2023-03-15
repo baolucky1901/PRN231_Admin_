@@ -1,21 +1,8 @@
-import { Helmet } from 'react-helmet-async';
-import { filter } from 'lodash';
-import { sentenceCase } from 'change-case';
-import { useState, useEffect } from 'react';
+import { Helmet } from "react-helmet-async";
+import { filter } from "lodash";
+import { useState, useEffect } from "react";
 // @antd
-import { Form,
-  Input,
-  // Button,
-  Modal,
-  Radio,
-  Select,
-  Cascader,
-  DatePicker,
-  InputNumber,
-  TreeSelect,
-  Switch,
-  Checkbox,
-  Upload, } from 'antd';
+import { Form, Input, Modal } from "antd";
 // @mui
 import {
   Card,
@@ -25,7 +12,6 @@ import {
   Avatar,
   Button,
   Popover,
-  // Checkbox,
   TableRow,
   MenuItem,
   TableBody,
@@ -35,34 +21,22 @@ import {
   IconButton,
   TableContainer,
   TablePagination,
-} from '@mui/material';
+} from "@mui/material";
 // components
-import Label from '../components/label';
-import Iconify from '../components/iconify';
-import Scrollbar from '../components/scrollbar';
+import Label from "../components/label";
+import Iconify from "../components/iconify";
+import Scrollbar from "../components/scrollbar";
 // sections
-import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
+import { UserListHead, UserListToolbar } from "../sections/@dashboard/user";
 // mock
-import USERLIST from '../_mock/user';
 
 // ----------------------------------------------------------------------
 const { TextArea } = Input;
 
-
 const TABLE_HEAD = [
-  // { id: 'name', label: 'Name', alignRight: false },
-  // { id: 'company', label: 'Company', alignRight: false },
-  // { id: 'role', label: 'Role', alignRight: false },
-  // { id: 'isVerified', label: 'Verified', alignRight: false },
-  // { id: 'status', label: 'Status', alignRight: false },
-  // { id: '' },
-  { id: 'id', label: 'Id', alignRight: false },
-  { id: 'name', label: 'Name', alignRight: false },
-  { id: '' },
-  // { id: 'userId', label: 'User Id', alignRight: false },
-  // { id: 'id', label: 'Id', alignRight: false },
-  // { id: 'title', label: 'Title', alignRight: false },
-  // { id: 'body', label: 'Body', alignRight: false },
+  { id: "id", label: "Id", alignRight: false },
+  { id: "name", label: "Name", alignRight: false },
+  { id: "" },
 ];
 
 // ----------------------------------------------------------------------
@@ -78,7 +52,7 @@ function descendingComparator(a, b, orderBy) {
 }
 
 function getComparator(order, orderBy) {
-  return order === 'desc'
+  return order === "desc"
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy);
 }
@@ -91,34 +65,33 @@ function applySortFilter(array, comparator, query) {
     return a[1] - b[1];
   });
   if (query) {
-    return filter(array, (_user) => _user.name.toLowerCase().indexOf(query.toLowerCase()) !== -1);
+    return filter(
+      array,
+      (_user) => _user.name.toLowerCase().indexOf(query.toLowerCase()) !== -1
+    );
   }
   return stabilizedThis.map((el) => el[0]);
 }
 
 const CollectionCreateForm = ({ open, onCreate, onCancel }) => {
-  const [name, SetName] = useState('');
-  const [description, SetDescription] = useState('');
+  const [name, SetName] = useState("");
+  const [description, SetDescription] = useState("");
 
   const handleCreateCategory = () => {
     // event.preventDefault();
-    let addData = {name: name, description: description};
+    let addData = { name: name, description: description };
     const requestOptions = {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(addData)
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(addData),
     };
-    fetch('https://localhost:44301/api/categories/category', requestOptions)
-      .then(response => response.json())
-      .then(data => console.log(data))
-      .catch(error => console.error(error));
-  }
-
+    fetch("https://localhost:44301/api/categories/category", requestOptions)
+      .then((response) => response.json())
+      .then((data) => console.log(data))
+      .catch((error) => console.error(error));
+  };
 
   const [form] = Form.useForm();
-  const onOk = () => {
-    form.submit();
-  };
   return (
     <Modal
       open={open}
@@ -135,7 +108,7 @@ const CollectionCreateForm = ({ open, onCreate, onCancel }) => {
             handleCreateCategory();
           })
           .catch((info) => {
-            console.log('Validate Failed:', info);
+            console.log("Validate Failed:", info);
           });
       }}
     >
@@ -144,62 +117,40 @@ const CollectionCreateForm = ({ open, onCreate, onCancel }) => {
         autoComplete="off"
         layout="vertical"
         name="form_in_modal"
-        // initialValues={{
-        //   modifier: 'public',
-        // }}
       >
         <Form.Item
-            name="name"
-            label="Name"
-            rules={[
-              {
-                required: true,
-                message: "Please enter your name",
-              },
-              { whitespace: true },
-              { min: 3 },
-            ]}
-            hasFeedback
-          >
-            <Input placeholder="Type your name" onChange={(e) => SetName(e.target.value)}/>
-          </Form.Item>
-
-        <Form.Item  
-            name="description" 
-            label="Description"
-            rules={[
-              { whitespace: true },
-            ]}
-            requiredMark="optional"
-        >
-          <TextArea 
-            placeholder="Type something" 
-            rows={4} 
-            showCount 
-            maxLength={500} onChange={(e) => SetDescription(e.target.value)}
-          />
-        </Form.Item>
-        {/* <Form.Item
-          name="title"
-          label="Title"
+          name="name"
+          label="Name"
           rules={[
             {
               required: true,
-              message: 'Please input the title of collection!',
+              message: "Please enter your name",
             },
+            { whitespace: true },
+            { min: 3 },
           ]}
+          hasFeedback
         >
-          <Input />
+          <Input
+            placeholder="Type your name"
+            onChange={(e) => SetName(e.target.value)}
+          />
         </Form.Item>
-        <Form.Item name="description" label="Description">
-          <Input type="textarea" />
+
+        <Form.Item
+          name="description"
+          label="Description"
+          rules={[{ whitespace: true }]}
+          requiredMark="optional"
+        >
+          <TextArea
+            placeholder="Type something"
+            rows={4}
+            showCount
+            maxLength={500}
+            onChange={(e) => SetDescription(e.target.value)}
+          />
         </Form.Item>
-        <Form.Item name="modifier" className="collection-create-form_last-form-item">
-          <Radio.Group>
-            <Radio value="public">Public</Radio>
-            <Radio value="private">Private</Radio>
-          </Radio.Group>
-        </Form.Item> */}
       </Form>
     </Modal>
   );
@@ -210,20 +161,20 @@ export default function CategoryPage() {
 
   const [page, setPage] = useState(0);
 
-  const [order, setOrder] = useState('desc');
+  const [order, setOrder] = useState("desc");
 
   const [selected, setSelected] = useState([]);
 
-  const [orderBy, setOrderBy] = useState('id');
+  const [orderBy, setOrderBy] = useState("id");
 
-  const [filterName, setFilterName] = useState('');
+  const [filterName, setFilterName] = useState("");
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  const [data, setData] = useState([{"data" : []}]);
+  const [data, setData] = useState([{ data: [] }]);
 
   const [loading, setLoading] = useState(true);
- 
+
   const [error, setError] = useState(null);
 
   const APIUrl = "https://localhost:44301/api/categories";
@@ -232,12 +183,12 @@ export default function CategoryPage() {
   const [openModal, setOpenModal] = useState(false);
 
   const onCreate = (values) => {
-    console.log('Received values of form: ', values);
+    console.log("Received values of form: ", values);
     setOpenModal(false);
   };
 
   useEffect(() => {
-    fetch(APIUrl+"?page=1&pageSize=25")
+    fetch(APIUrl + "?page=1&pageSize=25")
       .then((response) => {
         if (!response.ok) {
           throw new Error(
@@ -246,9 +197,8 @@ export default function CategoryPage() {
         }
         return response.json();
       })
-      .then((responsedata) => {
-        setData(responsedata.data); 
-        // console.log("Check fetch data", responsedata.data)
+      .then((responseData) => {
+        setData(responseData.data);
       })
       .catch((err) => {
         setError(err.message);
@@ -257,7 +207,6 @@ export default function CategoryPage() {
       .finally(() => {
         setLoading(false);
       });
-      
   }, [data]);
 
   const handleOpenMenu = (event) => {
@@ -269,8 +218,8 @@ export default function CategoryPage() {
   };
 
   const handleRequestSort = (event, property) => {
-    const isAsc = orderBy === property && order === 'asc';
-    setOrder(isAsc ? 'desc' : 'asc');
+    const isAsc = orderBy === property && order === "asc";
+    setOrder(isAsc ? "desc" : "asc");
     setOrderBy(property);
   };
 
@@ -281,21 +230,6 @@ export default function CategoryPage() {
       return;
     }
     setSelected([]);
-  };
-
-  const handleClick = (event, name) => {
-    const selectedIndex = selected.indexOf(name);
-    let newSelected = [];
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
-    }
-    setSelected(newSelected);
   };
 
   const handleChangePage = (event, newPage) => {
@@ -312,10 +246,15 @@ export default function CategoryPage() {
     setFilterName(event.target.value);
   };
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - data.length) : 0;
+  const emptyRows =
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - data.length) : 0;
 
-  const filteredUsers = applySortFilter(data, getComparator(order, orderBy), filterName);
-  console.log(filteredUsers)
+  const filteredUsers = applySortFilter(
+    data,
+    getComparator(order, orderBy),
+    filterName
+  );
+  console.log(filteredUsers);
 
   const isNotFound = !filteredUsers.length && !!filterName;
 
@@ -325,21 +264,24 @@ export default function CategoryPage() {
         <title> Category | Minimal UI </title>
       </Helmet>
 
-        {loading && <div>A moment please...</div>}
-        {error && (
+      {loading && <div>A moment please...</div>}
+      {error && (
         <div>{`There is a problem fetching the post data - ${error}`}</div>
-        )}
+      )}
 
       <Container>
-        <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
+        <Stack
+          direction="row"
+          alignItems="center"
+          justifyContent="space-between"
+          mb={5}
+        >
           <Typography variant="h4" gutterBottom>
             Category
           </Typography>
-          {/* <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
-            New Category
-          </Button> */}
           <Button
-            variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}
+            variant="contained"
+            startIcon={<Iconify icon="eva:plus-fill" />}
             type="primary"
             onClick={() => {
               setOpenModal(true);
@@ -357,7 +299,11 @@ export default function CategoryPage() {
         </Stack>
 
         <Card>
-          <UserListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} />
+          <UserListToolbar
+            numSelected={selected.length}
+            filterName={filterName}
+            onFilterName={handleFilterByName}
+          />
 
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
@@ -372,37 +318,53 @@ export default function CategoryPage() {
                   onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
-                  {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { id, name, email, imgPath, isActive } = row;
-                    const selectedUser = selected.indexOf(id) !== -1;
+                  {filteredUsers
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((row) => {
+                      const { id, name, imgPath, isActive } = row;
+                      const selectedUser = selected.indexOf(id) !== -1;
 
-                    return (
-                      <TableRow hover key={id} tabIndex={-1} role="checkbox" selected={selectedUser}>
-                        {/* <TableCell padding="checkbox">
-                          <Checkbox checked={selectedUser} onChange={(event) => handleClick(event, id)} />
-                        </TableCell> */}
+                      return (
+                        <TableRow
+                          hover
+                          key={id}
+                          tabIndex={-1}
+                          role="checkbox"
+                          selected={selectedUser}
+                        >
+                          <TableCell align="left">{id}</TableCell>
 
-                        <TableCell align="left">{id}</TableCell>
-
-                        <TableCell component="th" scope="row" padding="none">
-                          <Stack direction="row" alignItems="center" spacing={2}>
-                            <Avatar alt={name} src={imgPath} />
-                            <Typography variant="subtitle2" noWrap>
-                              {name}
-                            </Typography>
-                          </Stack>
-                        </TableCell>
-                        <TableCell align="left">
-                          {isActive === true ? <Label color={('success')}>Active</Label> : <Label color={('error')}>Inactive</Label>}
-                        </TableCell>
-                        <TableCell align="right">
-                          <IconButton size="large" color="inherit" onClick={handleOpenMenu}>
-                            <Iconify icon={'eva:more-vertical-fill'} />
-                          </IconButton>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
+                          <TableCell component="th" scope="row" padding="none">
+                            <Stack
+                              direction="row"
+                              alignItems="center"
+                              spacing={2}
+                            >
+                              <Avatar alt={name} src={imgPath} />
+                              <Typography variant="subtitle2" noWrap>
+                                {name}
+                              </Typography>
+                            </Stack>
+                          </TableCell>
+                          <TableCell align="left">
+                            {isActive === true ? (
+                              <Label color={"success"}>Active</Label>
+                            ) : (
+                              <Label color={"error"}>Inactive</Label>
+                            )}
+                          </TableCell>
+                          <TableCell align="right">
+                            <IconButton
+                              size="large"
+                              color="inherit"
+                              onClick={handleOpenMenu}
+                            >
+                              <Iconify icon={"eva:more-vertical-fill"} />
+                            </IconButton>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
                   {emptyRows > 0 && (
                     <TableRow style={{ height: 53 * emptyRows }}>
                       <TableCell colSpan={6} />
@@ -416,7 +378,7 @@ export default function CategoryPage() {
                       <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
                         <Paper
                           sx={{
-                            textAlign: 'center',
+                            textAlign: "center",
                           }}
                         >
                           <Typography variant="h6" paragraph>
@@ -426,7 +388,8 @@ export default function CategoryPage() {
                           <Typography variant="body2">
                             No results found for &nbsp;
                             <strong>&quot;{filterName}&quot;</strong>.
-                            <br /> Try checking for typos or using complete words.
+                            <br /> Try checking for typos or using complete
+                            words.
                           </Typography>
                         </Paper>
                       </TableCell>
@@ -453,27 +416,27 @@ export default function CategoryPage() {
         open={Boolean(open)}
         anchorEl={open}
         onClose={handleCloseMenu}
-        anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
-        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+        anchorOrigin={{ vertical: "top", horizontal: "left" }}
+        transformOrigin={{ vertical: "top", horizontal: "right" }}
         PaperProps={{
           sx: {
             p: 1,
             width: 140,
-            '& .MuiMenuItem-root': {
+            "& .MuiMenuItem-root": {
               px: 1,
-              typography: 'body2',
+              typography: "body2",
               borderRadius: 0.75,
             },
           },
         }}
       >
         <MenuItem>
-          <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
+          <Iconify icon={"eva:edit-fill"} sx={{ mr: 2 }} />
           Edit
         </MenuItem>
 
-        <MenuItem sx={{ color: 'error.main' }}>
-          <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }} />
+        <MenuItem sx={{ color: "error.main" }}>
+          <Iconify icon={"eva:trash-2-outline"} sx={{ mr: 2 }} />
           Delete
         </MenuItem>
       </Popover>

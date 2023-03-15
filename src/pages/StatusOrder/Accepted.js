@@ -2,7 +2,6 @@ import React from 'react'
 import { useNavigate, useParams } from 'react-router-dom' 
 import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
-import { sentenceCase } from 'change-case';
 import { useState, useEffect } from 'react';
 // @mui
 import {
@@ -10,27 +9,20 @@ import {
   Table,
   Stack,
   Paper,
-  Avatar,
   Button,
-  Popover,
-  // Checkbox,
   TableRow,
-  MenuItem,
   TableBody,
   TableCell,
   Container,
   Typography,
-  IconButton,
   TableContainer,
   TablePagination,
 } from '@mui/material';
 // components
 import Label from '../../components/label';
-import Iconify from '../../components/iconify';
 import Scrollbar from '../../components/scrollbar';
 // sections
 import { UserListHead, UserListToolbar } from '../../sections/@dashboard/user';
-import { fontWeight } from '@mui/system';
 // mock
 
 const TABLE_HEAD = [
@@ -76,8 +68,6 @@ export default function AcceptedPage() {
   const {orderId} = useParams();
   const ordId = parseInt(orderId);
     // console.log(ordId);
-  const [open, setOpen] = useState(null);
-
   const [page, setPage] = useState(0);
 
   const [order, setOrder] = useState('desc');
@@ -92,10 +82,6 @@ export default function AcceptedPage() {
 
   const [data, setData] = useState([{"data" : []}]);
   const [dataOrder, setDataOrder] = useState([{"data": {}}])
-
-  const [loading, setLoading] = useState(true);
- 
-  const [error, setError] = useState(null);
 
   const APIUrl = "https://localhost:44301/api/order-details/";
   const APIUrlOrder = "https://localhost:44301/api/orders/admin/order/";
@@ -120,14 +106,6 @@ export default function AcceptedPage() {
     }
     fetchDataOrder();
   }, []);
-  console.log(data);
-  const handleOpenMenu = (event) => {
-    setOpen(event.currentTarget);
-  };
-
-  const handleCloseMenu = () => {
-    setOpen(null);
-  };
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -144,20 +122,6 @@ export default function AcceptedPage() {
     setSelected([]);
   };
 
-  const handleClick = (event, name) => {
-    const selectedIndex = selected.indexOf(name);
-    let newSelected = [];
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
-    }
-    setSelected(newSelected);
-  };
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -200,11 +164,6 @@ export default function AcceptedPage() {
         <title> Order Detail | Minimal UI </title>
       </Helmet>
 
-        {/* {loading && <div>A moment please...</div>}
-        {error && (
-        <div>{`There is a problem fetching the post data - ${error}`}</div>
-        )} */}
-
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
@@ -239,9 +198,6 @@ export default function AcceptedPage() {
 
                     return (
                       <TableRow hover key={row.id} tabIndex={-1} role="checkbox" selected={selectedUser}>
-                        {/* <TableCell padding="checkbox">
-                          <Checkbox checked={selectedUser} onChange={(event) => handleClick(event, id)} />
-                        </TableCell> */}
 
                         <TableCell align="left">{row.id}</TableCell>
 

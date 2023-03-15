@@ -19,17 +19,13 @@ import ComboBookPage from "./pages/ComboBookPage";
 import ListBookPage from "./pages/ListBookPage";
 import NewBook from "./pages/BookPage/NewBook";
 import NewEBook from "./pages/E-Book/NewEBook";
-import PhysicalAndEbookPage from "./pages/PhysicalAndEbookPage";
 import Accepted from "./pages/StatusOrder/Accepted";
 import AcceptedOnlinePage from "./pages/StatusOrder/AcceptedOnline";
 import CancelPage from "./pages/StatusOrder/Cancel";
 import PaidPage from "./pages/StatusOrder/Paid";
 import DonePage from "./pages/StatusOrder/Done";
-import AddBookToCombo from "./pages/ComboBook/AddBookToCombo";
 import AddBookToComboPage from "./pages/ComboBook/AddBookToCombo";
-import AddEBookToCombo from "./pages/ComboBook/AddEBookToCombo";
 import AddEBookToComboPage from "./pages/ComboBook/AddEBookToCombo";
-import NewPhysicalAndEBook from "./pages/Physical-EBook/NewPhysicalAndEBook";
 
 // ----------------------------------------------------------------------
 
@@ -56,14 +52,6 @@ export default function Router() {
         { path: "book", element: <BookPage /> },
         { path: "ebook", element: <EBookPage /> },
         { path: "publisher", element: <PublisherPage /> },
-        {
-          path: "physical-ebook",
-          element: <PhysicalAndEbookPage />,
-        },
-        {
-          path: "add-new-physical-ebook",
-          element: <NewPhysicalAndEBook />,
-        },
         {
           path: "combobook",
           element: <ComboBookPage />,

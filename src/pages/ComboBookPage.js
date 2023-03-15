@@ -102,9 +102,6 @@ const CollectionCreateForm = ({ open, onCreate, onCancel }) => {
         autoComplete="off"
         layout="vertical"
         name="form_in_modal"
-        // initialValues={{
-        //   modifier: 'public',
-        // }}
       >
         <Form.Item
           name="name"
@@ -213,9 +210,8 @@ export default function ComboBookPage() {
         }
         return response.json();
       })
-      .then((responsedata) => {
-        setData(responsedata.data);
-        // console.log("Check fetch data", responsedata.data)
+      .then((responseData) => {
+        setData(responseData.data);
       })
       .catch((err) => {
         setError(err.message);

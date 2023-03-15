@@ -2,15 +2,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 // @antd
-import {
-  Button,
-  Form,
-  Input,
-  InputNumber,
-  Row,
-  Col,
-  Select,
-} from "antd";
+import { Button, Form, Input, InputNumber, Row, Col, Select } from "antd";
 import { upLoadAllImage } from "../../firebase/firebase";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -58,8 +50,6 @@ function NewBook() {
         SetDataPub(responseData.data);
       });
   }, []);
-
-  // console.log("DefaultValue: ", dataCate[0].name);
 
   const onFilesUploadChange = async (e) => {
     const fileInput = e.target;
@@ -150,7 +140,6 @@ function NewBook() {
       body: JSON.stringify(addData),
     });
     const dataRes = await response.json();
-  // console.log("Data: ", dataRes.data);
 
     try {
       const promises = previewUrls.map((url) => {
@@ -169,8 +158,7 @@ function NewBook() {
       if (response != null) {
         toast.success("Create Successfully!");
         navigate("/dashboard/book");
-      }
-      else {
+      } else {
         alert("Create failed!");
       }
     } catch (error) {
@@ -185,9 +173,6 @@ function NewBook() {
       layout="vertical"
       name="form_in_modal"
       onFinish={onFinish}
-      // initialValues={{
-      //   modifier: 'public',
-      // }}
     >
       <Form.Item
         name="name"
@@ -353,8 +338,6 @@ function NewBook() {
               {option.name}
             </Option>
           ))}
-          {/* <Option value="1">Computer science and algorithms</Option>
-            <Option value="2">Cartoon</Option> */}
         </Select>
       </Form.Item>
 
@@ -375,8 +358,6 @@ function NewBook() {
               {option.name}
             </Option>
           ))}
-          {/* <Option value="1">Bach Khoa Ha Noi</Option>
-            <Option value="2">Conan</Option> */}
         </Select>
       </Form.Item>
 
@@ -394,27 +375,6 @@ function NewBook() {
           onChange={(e) => SetDescription(e.target.value)}
         />
       </Form.Item>
-      {/* <Form.Item
-          name="title"
-          label="Title"
-          rules={[
-            {
-              required: true,
-              message: 'Please input the title of collection!',
-            },
-          ]}
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item name="description" label="Description">
-          <Input type="textarea" />
-        </Form.Item>
-        <Form.Item name="modifier" className="collection-create-form_last-form-item">
-          <Radio.Group>
-            <Radio value="public">Public</Radio>
-            <Radio value="private">Private</Radio>
-          </Radio.Group>
-        </Form.Item> */}
       <Button type="primary" htmlType="submit" onClick={handleCreate}>
         Create
       </Button>
