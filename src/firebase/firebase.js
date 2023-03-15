@@ -28,15 +28,15 @@ export const uploadPDFAndGetURL = async (pdfFile) => {
   }
 };
 
-export const uploadPdfFile = (pdfUpload, setPdfUrls) => {
-    if (pdfUpload === null) return;
-    const pdfRef = ref(storage, `pdfs/${pdfUpload.name}`);
-    uploadBytes(pdfRef, pdfUpload).then((snapshot) => {
-      getDownloadURL(snapshot.ref).then((url) => {
-        setPdfUrls((prev) => [...prev, url]);
-      });
-    });
-  };
+// export const uploadPdfFile = (pdfUpload, setPdfUrls) => {
+//     if (pdfUpload === null) return;
+//     const pdfRef = ref(storage, `pdfs/${pdfUpload.name}`);
+//     uploadBytes(pdfRef, pdfUpload).then((snapshot) => {
+//       getDownloadURL(snapshot.ref).then((url) => {
+//         setPdfUrls((prev) => [...prev, url]);
+//       });
+//     });
+//   };
 
 export const upLoadAllImage = async (images, setListUrls) => {
   const files = Object.values(images);

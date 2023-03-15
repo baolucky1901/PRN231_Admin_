@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 // @antd
 import { Button, Form, Input, InputNumber, Row, Col, Select } from "antd";
 import { upLoadAllImage, uploadPDFAndGetURL } from "../../firebase/firebase";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 // ====================================================
 
@@ -153,10 +155,10 @@ const NewEBook = () => {
       const promises = previewUrls.map((url) => {
         const createBookImage = {
           imgPath: url,
-          bookId: dataRes.data,
+          ebookId: dataRes.data,
         };
         console.log("CreateBookImage: ", createBookImage);
-        return fetch("https://localhost:44301/api/book-images/book-image", {
+        return fetch("https://localhost:44301/api/book-images/book-image/ebook", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(createBookImage),
@@ -164,7 +166,7 @@ const NewEBook = () => {
       });
       const response = await Promise.all(promises);
       if (response != null) {
-        alert("Create Successfully!");
+        toast.success("Create Successfully!");
         navigate("/dashboard/ebook");
       } else {
         alert("Create failed!");
@@ -286,7 +288,7 @@ const NewEBook = () => {
               <InputNumber min={0} onChange={handleInputPrice} value={price} />
             </Form.Item>
           </Form.Item>
-        </Col>}
+        </Col>
       </Row>
 
       <Form.Item
@@ -310,7 +312,7 @@ const NewEBook = () => {
       </Form.Item>
 
       <Form.Item
-        label="Upload"
+        label="Upload Images Ebook"
         rules={[
           {
             required: true,
