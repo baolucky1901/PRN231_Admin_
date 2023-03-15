@@ -116,7 +116,7 @@ export default function AddEBookToComboPage() {
       setData(data.data);
     };
     fetchDataPhysicalBook();
-  }, []);
+  }, [dataDetail]);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
