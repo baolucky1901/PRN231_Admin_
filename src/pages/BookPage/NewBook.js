@@ -12,6 +12,8 @@ import {
   Select,
 } from "antd";
 import { upLoadAllImage } from "../../firebase/firebase";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 // ====================================================
 
@@ -165,7 +167,7 @@ function NewBook() {
       });
       const response = await Promise.all(promises);
       if (response != null) {
-        alert("Create Successfully!");
+        toast.success("Create Successfully!");
         navigate("/dashboard/book");
       }
       else {

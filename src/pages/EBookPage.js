@@ -29,7 +29,7 @@ import { UserListHead, UserListToolbar } from "../sections/@dashboard/user";
 // mock
 
 const TABLE_HEAD = [
-  { id: "id", label: "Id", alignRight: false },
+  { id: "ebookId", label: "Id", alignRight: false },
   { id: "name", label: "Name", alignRight: false },
   { id: "price", label: "Price", alignRight: true },
   { id: "amountSold", label: "AmountSold", alignRight: true },
@@ -89,7 +89,7 @@ export default function EBookPage() {
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  const [data, setData] = useState([{ data: [] }]);
+  const [data, setData] = useState([]);
 
   const [loading, setLoading] = useState(true);
 
@@ -328,7 +328,7 @@ export default function EBookPage() {
   // };
 
   useEffect(() => {
-    fetch(APIUrl + "?page=1&pageSize=25")
+    fetch(APIUrl+"?page=1&pageSize=25")
       .then((response) => {
         if (!response.ok) {
           throw new Error(
@@ -338,7 +338,7 @@ export default function EBookPage() {
         return response.json();
       })
       .then((responsedata) => {
-        setData(responsedata.data);
+        setData(responsedata.data); 
         // console.log("Check fetch data", responsedata.data)
       })
       .catch((err) => {
@@ -348,6 +348,7 @@ export default function EBookPage() {
       .finally(() => {
         setLoading(false);
       });
+      
   }, []);
 
   const handleOpenMenu = (event) => {
@@ -431,11 +432,7 @@ export default function EBookPage() {
         </Stack>
 
         <Card>
-          <UserListToolbar
-            numSelected={selected.length}
-            filterName={filterName}
-            onFilterName={handleFilterByName}
-          />
+          <UserListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} />
 
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
@@ -450,118 +447,17 @@ export default function EBookPage() {
                   onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
-                  {filteredUsers
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((row) => {
-                      const {
-                        id,
-                        name,
-                        isbn,
-                        author,
-                        price,
-                        amountSold,
-                        categoryName,
-                        publisherName,
-                        isActive,
-                      } = row;
-                      const selectedUser = selected.indexOf(id) !== -1;
-
-                      return (
-                        <TableRow
-                          hover
-                          key={id}
-                          tabIndex={-1}
-                          role="checkbox"
-                          selected={selectedUser}
-                        >
-                          <TableCell align="left">{id}</TableCell>
-
-                          <TableCell component="th" scope="row" padding="none">
-                            <Stack
-                              direction="column"
-                              alignItems="start"
-                              padding={2}
-                              spacing={2}
-                            >
-                              <Typography variant="subtitle2" noWrap>
-                                {name}
-                              </Typography>
-                              ISBN: {isbn}
-                            </Stack>
-                          </TableCell>
-
-                          <TableCell align="right">{price}</TableCell>
-
-                          <TableCell align="right">{amountSold}</TableCell>
-
-                          <TableCell component="th" scope="row" padding="none">
-                            <Stack
-                              direction="row"
-                              alignItems="start"
-                              minWidth={2}
-                              padding={2}
-                              spacing={2}
-                            >
-                              <Typography variant="subtitle2" noWrap>
-                                {author}
-                              </Typography>
-                            </Stack>
-                          </TableCell>
-
-                          <TableCell component="th" scope="row" padding="none">
-                            <Stack
-                              direction="row"
-                              alignItems="center"
-                              padding={2}
-                              spacing={2}
-                            >
-                              <Typography noWrap>{categoryName}</Typography>
-                            </Stack>
-                          </TableCell>
-
-                          <TableCell component="th" scope="row" padding="none">
-                            <Stack
-                              direction="row"
-                              alignItems="center"
-                              padding={2}
-                              spacing={2}
-                            >
-                              <Typography noWrap>{publisherName}</Typography>
-                            </Stack>
-                          </TableCell>
-
-                          <TableCell align="left">
-                            {isActive === true ? (
-                              <Label color={"success"}>Active</Label>
-                            ) : (
-                              <Label color={"error"}>Inactive</Label>
-                            )}
-                          </TableCell>
-
-                          <TableCell align="right">
-                            <IconButton
-                              size="large"
-                              color="inherit"
-                              onClick={handleOpenMenu}
-                            >
-                              <Iconify icon={"eva:more-vertical-fill"} />
-                            </IconButton>
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })}
-=======
                   {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { id, name, isbn, author, priceEbook, amountSold, categoryName, publisherName,isActive } = row;
-                    const selectedUser = selected.indexOf(id) !== -1;
+                    const { ebookId, name, isbn, author, price, amountSold, categoryName, publisherName,isActive } = row;
+                    const selectedUser = selected.indexOf(ebookId) !== -1;
 
                     return (
-                      <TableRow hover key={id} tabIndex={-1} role="checkbox" selected={selectedUser}>
+                      <TableRow hover key={ebookId} tabIndex={-1} role="checkbox" selected={selectedUser}>
                         {/* <TableCell padding="checkbox">
-                          <Checkbox checked={selectedUser} onChange={(event) => handleClick(event, id)} />
+                          <Checkbox checked={selectedUser} onChange={(event) => handleClick(event, ebookId)} />
                         </TableCell> */}
 
-                        <TableCell align="left">{id}</TableCell>
+                        <TableCell align="left">{ebookId}</TableCell>
 
                         <TableCell component="th" scope="row" padding="none">
                           <Stack direction="column" alignItems="start" padding={2} spacing={2}>
@@ -573,7 +469,7 @@ export default function EBookPage() {
                           </Stack>
                         </TableCell>
 
-                        <TableCell align="right">{priceEbook}</TableCell>
+                        <TableCell align="right">{price}</TableCell>
 
                         <TableCell align="right">{amountSold}</TableCell>
 
@@ -632,7 +528,7 @@ export default function EBookPage() {
                       <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
                         <Paper
                           sx={{
-                            textAlign: "center",
+                            textAlign: 'center',
                           }}
                         >
                           <Typography variant="h6" paragraph>
@@ -642,8 +538,7 @@ export default function EBookPage() {
                           <Typography variant="body2">
                             No results found for &nbsp;
                             <strong>&quot;{filterName}&quot;</strong>.
-                            <br /> Try checking for typos or using complete
-                            words.
+                            <br /> Try checking for typos or using complete words.
                           </Typography>
                         </Paper>
                       </TableCell>
