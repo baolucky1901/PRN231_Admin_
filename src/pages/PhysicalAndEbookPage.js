@@ -33,6 +33,7 @@ const TABLE_HEAD = [
   { id: 'id', label: 'Id', alignRight: false },
   { id: 'name', label: 'Name', alignRight: false },
   { id: 'price', label: 'Price', alignRight: true },
+  { id: 'eBookPrice', label: 'EBookPrice', alignRight: true },
   { id: 'amount', label: 'Amount', alignRight: true },
   { id: 'amountSold', label: 'AmountSold', alignRight: true },
   { id: 'author', label: 'Author', alignRight: false },
@@ -487,7 +488,7 @@ export default function PhysicalAndEbookPage() {
                 />
                 <TableBody>
                   {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { id, name, isbn, author, price, amount, amountSold, categoryName, publisherName,isActive } = row;
+                    const { id, name, isbn, author, price, eBookPrice, amount, amountSold, categoryName, publisherName,isActive } = row;
                     const selectedUser = selected.indexOf(id) !== -1;
 
                     return (
@@ -506,6 +507,7 @@ export default function PhysicalAndEbookPage() {
                         </TableCell>
 
                         <TableCell align="right">{price}</TableCell>
+                        <TableCell align="right">{eBookPrice}</TableCell>
 
                         <TableCell align="right">{amount}</TableCell>
 
