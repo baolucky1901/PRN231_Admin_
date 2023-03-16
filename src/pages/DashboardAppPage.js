@@ -32,6 +32,7 @@ export default function DashboardAppPage() {
   const [countOrderPhysicalDeli, setCountOrderPhysicalDeli] = useState();
   const [countOrderDone, setCountOrderDone] = useState();
   const [countOrderCancel, setCountOrderCancel] = useState();
+  const [topsellingPhy, setTopSellingPhy] = useState();
 
   const APIUrlCountOrder = "https://localhost:44301/api/orders/admin/count";
   const APIUrlCountAcc = "https://localhost:44301/api/accounts/count";
@@ -42,6 +43,7 @@ export default function DashboardAppPage() {
   const APIUrlCountOrderPhysicalDeli = "https://localhost:44301/api/orders/admin/count-order/physical-delivered";
   const APIUrlCountOrderDone = "https://localhost:44301/api/orders/admin/count-order/done";
   const APIUrlCountOrderCancel = "https://localhost:44301/api/orders/admin/count-order/cancel";
+  const APIURLTopSellingPhysicalBook = "https://localhost:44301/api/books/admin/dashboard/top-selling";
 
   useEffect(() => {
     fetch(APIUrlCountOrder)
@@ -153,8 +155,20 @@ export default function DashboardAppPage() {
       .then((responseData) => {
         setCountOrderEbookDeli(responseData.data); 
       })
+      fetch(APIURLTopSellingPhysicalBook)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(
+            `This is an HTTP error: The status is ${response.status}`
+          );
+        }
+        return response.json();
+      })
+      .then((responseData) => {
+        setTopSellingPhy(responseData.data); 
+      })
       
-  }, [countOrder, countAcc, countOrderDone, countOrderCancel, countOrderInProgress, countOrderAccepted, countOrderPaid, countOrderPhysicalDeli, countOrderEbookDeli]);
+  }, [countOrder, countAcc, countOrderDone, countOrderCancel, countOrderInProgress, countOrderAccepted, countOrderPaid, countOrderPhysicalDeli, countOrderEbookDeli, topsellingPhy]);
 
   return (
     <>
@@ -206,7 +220,7 @@ export default function DashboardAppPage() {
             />
           </Grid>
 
-          <Grid item xs={12} md={6} lg={8}>
+          {/* <Grid item xs={12} md={6} lg={8}>
             <AppConversionRates
               title="Conversion Rates"
               subheader="(+43%) than last year"
@@ -222,6 +236,26 @@ export default function DashboardAppPage() {
                 { label: 'United States', value: 1200 },
                 { label: 'United Kingdom', value: 1380 },
               ]}
+            />
+          </Grid> */}
+
+            <Grid item xs={12} md={6} lg={8}>
+                <AppConversionRates
+                  title="Top 10 Best Selling Physical Book"
+                  subheader="(+43%) than last year"
+                  chartData={[
+                    { label: topsellingPhy[0].name, value: topsellingPhy[0].amountSold },
+                    { label: topsellingPhy[1].name, value: topsellingPhy[1].amountSold},
+                    { label: topsellingPhy[2].name, value: topsellingPhy[2].amountSold },
+                    { label: topsellingPhy[3].name, value: topsellingPhy[3].amountSold },
+                    { label: topsellingPhy[4].name, value: topsellingPhy[4].amountSold },
+                    { label: topsellingPhy[5].name, value: topsellingPhy[5].amountSold},
+                    { label: topsellingPhy[6].name, value: topsellingPhy[6].amountSold },
+                    { label: topsellingPhy[7].name, value: topsellingPhy[7].amountSold },
+                    { label: topsellingPhy[8].name, value: topsellingPhy[8].amountSold },
+                    { label: topsellingPhy[9].name, value: topsellingPhy[9].amountSold },
+                  ]
+                }
             />
           </Grid>
 
