@@ -33,6 +33,16 @@ export default function DashboardAppPage() {
   const [countOrderDone, setCountOrderDone] = useState();
   const [countOrderCancel, setCountOrderCancel] = useState();
   const [topsellingPhy, setTopSellingPhy] = useState();
+  const [phy1, setPhy1] = useState();
+  const [phy2, setPhy2] = useState();
+  const [phy3, setPhy3] = useState();
+  const [phy4, setPhy4] = useState();
+  const [phy5, setPhy5] = useState();
+  const [phy6, setPhy6] = useState();
+  const [phy7, setPhy7] = useState();
+  const [phy8, setPhy8] = useState();
+  const [phy9, setPhy9] = useState();
+  const [phy10, setPhy10] = useState();
 
   const APIUrlCountOrder = "https://localhost:44301/api/orders/admin/count";
   const APIUrlCountAcc = "https://localhost:44301/api/accounts/count";
@@ -165,11 +175,23 @@ export default function DashboardAppPage() {
         return response.json();
       })
       .then((responseData) => {
-        setTopSellingPhy(responseData.data); 
+        console.log(responseData.data);
+        setPhy1(responseData.data[0]); 
+        setPhy2(responseData.data[1]);
+        setPhy3(responseData.data[2]); 
+        setPhy4(responseData.data[3]);
+        setPhy5(responseData.data[4]); 
+        setPhy6(responseData.data[5]);
+        setPhy7(responseData.data[6]); 
+        setPhy8(responseData.data[7]);
+        setPhy9(responseData.data[8]); 
+        setPhy10(responseData.data[9]);
+
       })
       
-  }, [countOrder, countAcc, countOrderDone, countOrderCancel, countOrderInProgress, countOrderAccepted, countOrderPaid, countOrderPhysicalDeli, countOrderEbookDeli, topsellingPhy]);
-
+  }, [countOrder, countAcc, countOrderDone, countOrderCancel, countOrderInProgress, countOrderAccepted, countOrderPaid, countOrderPhysicalDeli, countOrderEbookDeli, phy1, phy2, phy3, phy4, phy5, phy6, phy7, phy8, phy9, phy10]);
+  
+  console.log(phy1);
   return (
     <>
       <Helmet>
@@ -244,16 +266,16 @@ export default function DashboardAppPage() {
                   title="Top 10 Best Selling Physical Book"
                   subheader="(+43%) than last year"
                   chartData={[
-                    { label: topsellingPhy[0].name, value: topsellingPhy[0].amountSold },
-                    { label: topsellingPhy[1].name, value: topsellingPhy[1].amountSold},
-                    { label: topsellingPhy[2].name, value: topsellingPhy[2].amountSold },
-                    { label: topsellingPhy[3].name, value: topsellingPhy[3].amountSold },
-                    { label: topsellingPhy[4].name, value: topsellingPhy[4].amountSold },
-                    { label: topsellingPhy[5].name, value: topsellingPhy[5].amountSold},
-                    { label: topsellingPhy[6].name, value: topsellingPhy[6].amountSold },
-                    { label: topsellingPhy[7].name, value: topsellingPhy[7].amountSold },
-                    { label: topsellingPhy[8].name, value: topsellingPhy[8].amountSold },
-                    { label: topsellingPhy[9].name, value: topsellingPhy[9].amountSold },
+                    phy1 != null ?{ label: phy1.name, value: phy1.amountSold } : "-",
+                    phy2 != null ?{ label: phy2.name, value: phy2.amountSold} : "-",
+                    phy3 != null ?{ label: phy3.name, value: phy3.amountSold }: "-",
+                    phy4 != null ?{ label: phy4.name, value: phy4.amountSold }: "-",
+                    phy5 != null ?{ label: phy5.name, value: phy5.amountSold }: "-",
+                    phy6 != null ?{ label: phy6.name, value: phy6.amountSold}: "-",
+                    phy7 != null ?{ label: phy7.name, value: phy7.amountSold }: "-",
+                    phy8 != null ?{ label: phy8.name, value: phy8.amountSold }: "-",
+                    phy9 != null ?{ label: phy9.name, value: phy9.amountSold }: "-",
+                    phy10 != null ?{ label: phy10.name, value: phy10.amountSold}: "-",
                   ]
                 }
             />
